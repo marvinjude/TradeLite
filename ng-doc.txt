@@ -1,0 +1,54 @@
+fix ithe __DIR in the const file 
+edit the link to to use the constant to the temoplateds specified in the conf file 
+#drop dashboard
+
+
+
+
+username: ALHAJI
+password: RAMADAN
+
+
+stock
+   receive stock
+      add date in to receive stock
+
+Enq 
+   
+  - view shop stock (stock name, desc, Qty, cost/price per ton )
+  - view daily expenses 
+    - show |-------------|------------|
+              start date - End Date 
+    -
+
+sale(object):
+  -sell (post sales to customer)
+     customer name , invoice NO(system generated), date, stock name , 
+      quantity sold,  price per ton(from db), quantity per ton (user input ),Amount = formulae(),checkbox(is item supplied?),if yes -showInvoice for printing, else reload page, save last customer to session and select it on page reload for customer field
+  
+- post daily expenses 
+     expennse name : transport /lunch /...
+     amount : 
+     date : 
+        save expense goto view expense 
+
+ -view all Expenses 
+
+ -post brought foward (B/F)
+
+    amount : 
+    Date :
+       save B/F goto view all b/fs
+
+
+
+
+    formulae (total sales) = (price per ton/ quantity per ton) * quantity sold  
+
+                                50     /   20    *      100   == 250
+
+
+**** selling in table = total sales/quantity sold *******
+   
+
+
