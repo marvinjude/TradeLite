@@ -1,6 +1,34 @@
 <?php
 $connection = include('../resources/conection.inc.php');
 
+
+if (isset($_POST['update_cost_per_ton'])){
+  $id = trim($_POST['id']);
+  $cost_per_ton = mysqli_real_escape_string($connection,htmlentities(trim($_POST['cost_per_ton'])));
+  update('stocks','cost_per_ton',$cost_per_ton, array("field"=> 'id', "value" => $id ));
+}
+
+
+
+
+
+function update($table,$field,$newvalue,$selection_condition = array()){
+  global $connection;
+  $selection_condition = (object)$selection_condition;
+
+  $query = "UPDATE  $table SET $field = $newvalue WHERE 
+  $selection_condition->field ='$selection_condition->value'  ";
+  if (mysqli_query($connection,$query)){
+    return true;
+  }else{
+    trigger_error("error: " . mysqli_error($connection));
+    return false;
+  }
+}
+
+
+
+
 function get_all($table){
   global $connection;
   $all_data = array();
@@ -43,6 +71,8 @@ function get_all($table){
   <link rel="stylesheet" href="../css/skins/_all-skins.min.css">
   <!-- iCheck -->
   <link rel="stylesheet" href="../plugins/iCheck/flat/blue.css">
+
+  <link rel="stylesheet" href="../css/animate.min.css">
   <!-- Morris chart -->
   <link rel="stylesheet" href="../plugins/morris/morris.css">
   <!-- jvectormap -->
@@ -92,7 +122,7 @@ function get_all($table){
 
         <!-- start modal- modal for edit product/stock -->
         <div class="example-modal">
-          <div class="modal">
+          <div class="modal animated pulse" >
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
@@ -104,26 +134,36 @@ function get_all($table){
 
                     <!-- modal body -->
 
-                    <form role="form">
+                    <form role="form"  method="POST" action = <?php echo $_SERVER['PHP_SELF']?> >
                       <div class="box-body">
                         <div class="form-group">
                           <label for="exampleInputEmail1">Name/Description</label>
-                          <input type="text" class="form-control" id="exampleInputEmail1" disabled="disabled" >
+                          <input type="text" class="form-control" id ="modal_desc"  
+                          id ="modal_desc" disabled>
                         </div>
 
                         <div class="form-group">
-                          <label for="exampleInputEmail1">Type</label>
-                          <input type="email" class="form-control" id="exampleInputEmail1" disabled="disabled" >
-                        </div>
-                        <div class="form-group">
                           <label for="exampleInputPassword1">Price Per Ton</label>
-                          <input type="text" class="form-control" id="cost_per_ton" autofocus="true" >
+                          <input type="text" class="form-control" id="modal_cost_per_ton" autofocus="true" 
+                          data-toggle = "tooltip" title="Change Cost Per Ton" name = 'cost_per_ton'>
                         </div>
 
                         <div class="form-group">
                           <label for="exampleInputEmail1">Quantity In Store</label>
-                          <input type="email" class="form-control" id="exampleInputEmail1" disabled="disabled" >
+                          <input type="text" class="form-control" id="modal_quantity_in_store"  disabled>
                         </div>
+
+                        <div class="form-group">
+                          <label for="exampleInputEmail1">Last Receive Date</label>
+                          <input type="email" class="form-control" id="modal_last_receive_date"  disabled >
+                        </div>
+
+                        <div class="modal-footer">
+                          <input  type="submit" class="btn btn-primary" value = "Save changes" 
+                          name = "update_cost_per_ton" id = "modal_hide">
+                        </div>
+
+                        <input type="text" name="id" id = "id" hidden>
 
                       </div>
                     </form>
@@ -133,9 +173,7 @@ function get_all($table){
 
 
                   </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                  </div>
+
                 </div>
                 <!-- /.modal-content -->
               </div>
@@ -154,143 +192,180 @@ function get_all($table){
             </h1>
             <hr>         
             <ol class="breadcrumb">
-              <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+              <li><a href="#"><i class="glyphicon glyphicon-search"></i> Home</a></li>
               <li><a href="#">Stock</a></li>
               <li class="active">view</li>
             </ol>
           </section>
           <hr>
           <div class = "container-fluid">
-            <div class = "row">
+     
 
 
 
-              <div class = 'col col-md-3'>
-               <div class="small-box bg-aqua">
-                <div class="inner">
-                  <h3>
 
-                   <?php  
+      <div class = 'col col-md-3'>
+       <div class="small-box bg-green animated slideInLeft">
+        <div class="inner">
+          <h3>
 
-                   $tabledata = get_all('stocks');
-                   echo count($tabledata);
+           <?php  
 
-                   ?>
+           $tabledata = get_all('stocks');
+           echo count($tabledata);
 
-                 </h3>
+           ?>
 
-                 <p>Total Stock</p>
-               </div>
-               <div class="icon">
-                <i class="ion ion-bag"></i>
-              </div>
-              <a href="#" class="small-box-footer"> <i class="fa fa-arrow-circle-right"></i></a>
-            </div>
+         </h3>
 
-          </div>
-
-
-
-          <div class = "col col-md-12">
-            <div class="box">
-              <div class="box-header">
-                <h3 class="box-title">All Stocks</h3>
-              </div>
-
-              
-              <!-- /.box-header -->
-              <div class="box-body no-padding">
-                <table class="table table-striped">
-
-
-                  <tr>
-                    <th >#</th>
-                    <th>Name/Description</th>
-                    <th>Quantity In Store</th>
-                    <th >Price Per Ton</th>
-                    <th>Last Receive Date</th>
-                    <th >Date Created</th>
-                    <th >_</th>
-                  </tr>
-
-
-                  <?php foreach ($tabledata as $row): ?>
-
-                   <tr>
-                    <td><?= $row['id'] ?></td>
-
-                    <td><?= $row['description'] ?></td>
-
-                    <td>  <?= $row['quantity_in_store'] ?> </td>
-
-                    <td> <?= $row['cost_per_ton'] ?></td>
-
-                    <td> <?= $row['last_receive_date'] ?></td>
-
-                    <td> <?= $row['date_created'] ?></td>
-
-                    <td>
-                      <span class="badge bg-green edit" id = "test" stock_data = <?= "'". json_encode($row) ."'" ?>  >Change Price Per Ton</span>
-                    </td>
-
-                  </tr>
-
-
-                <?php endforeach ?>
-
-
-
-              </table>
-            </div>
-            <!-- /.box-body -->
-          </div>
-          <!-- /.box -->
-        </div>
+         <p>Last Stock Received Stock</p>
+       </div>
+       <div class="icon">
+        <i class="ion glyphicon glyphicon-calendar"></i>
       </div>
+      <a href="#" class="small-box-footer"> <i class="glyphicon glyphicon-calendar"></i></a>
     </div>
+
   </div>
 
 
 
+  <div class = 'col col-md-3'>
+   <div class="small-box bg-aqua animated slideInLeft">
+    <div class="inner">
+      <h3>
+
+       <?php  
+
+       $tabledata = get_all('stocks');
+       echo count($tabledata);
+
+       ?>
+
+     </h3>
+
+     <p>Total Stock</p>
+   </div>
+   <div class="icon">
+    <i class="ion ion-bag"></i>
+  </div>
+  <a href="#" class="small-box-footer"> <i class="fa fa-arrow-circle-right"></i></a>
+</div>
+
+</div>
 
 
-  <script src="../js/jquery-2.2.3.min.js"></script>
-  <!-- Bootstrap 3.3.6 -->
-  <script src="../js/bootstrap.min.js"></script>
-  <!-- FastClick -->
-  <script src="../js/fastclick.min.js"></script>
-  <!-- AdminLTE App -->
-  <script src="../dist/js/app.min.js"></script>
-  <!-- AdminLTE for demo purposes -->
-  <script src="../dist/js/demo.js"></script> 
-  <script type="text/javascript">
+
+<div class = "col col-md-12">
+  <div class="box">
+    <div class="box-header">
+      <h3 class="box-title">All Stocks</h3>
+    </div>
+
+
+    <!-- /.box-header -->
+    <div class="box-body no-padding">
+      <table class="table table-striped">
+
+
+        <tr>
+          <th >#</th>
+          <th>Name/Description</th>
+          <th>Quantity In Store</th>
+          <th >Price Per Ton</th>
+          <th>Last Receive Date</th>
+          <th >Date Created</th>
+          <th >_</th>
+        </tr>
+
+
+        <?php foreach ($tabledata as $row): ?>
+
+         <tr>
+          <td><?= $row['id'] ?></td>
+
+          <td><?= $row['description'] ?></td>
+
+          <td>  <?= $row['quantity_in_store'] ?> </td>
+
+          <td> <?= $row['cost_per_ton'] ?></td>
+
+          <td> <?= $row['last_receive_date'] ?></td>
+
+          <td> <?= $row['date_created'] ?></td>
+
+          <td>
+            <span class="badge bg-green edit" id = "test" stock_data = <?= "'". json_encode($row) ."'" ?>  >Change Price Per Ton</span>
+          </td>
+
+        </tr>
+
+
+      <?php endforeach ?>
 
 
 
-    $('document').ready(function(){
-     
-     alert($('.test').stock_data);
+    </table>
+  </div>
+  <!-- /.box-body -->
+</div>
+<!-- /.box -->
+</div>
+</div>
+</div>
+</div>
 
+
+
+
+
+<script src="../js/jquery-2.2.3.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="../js/bootstrap.min.js"></script>
+<!-- FastClick -->
+<script src="../js/fastclick.min.js"></script>
+<!-- AdminLTE App -->
+<script src="../dist/js/app.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="../dist/js/demo.js"></script> 
+<script type="text/javascript">
+
+
+
+  $('document').ready(function(){
 
 
     $('.edit').on('click', function(event){
-        $('.modal').modal();
-        
-      //console.log($(source).parentsUntil("tr"))
-    })
+      var button =  event.target;
+      var stock_data = button.getAttribute('stock_data');
+      var stock_data = JSON.parse(stock_data);
+      console.log(stock_data);
 
- 
+      console.log(stock_data.description,stock_data.cost_per_ton);
 
-     $('#deletestock').on('click',function(){
+      $('#modal_quantity_in_store').val(stock_data.quantity_in_store);
+      $('#modal_desc').val(stock_data.description);
+      $('#modal_last_receive_date').val(stock_data.last_receive_date);
+      $('#modal_cost_per_ton').val(stock_data.cost_per_ton);
+      $('#id').val(stock_data.id);
+
+      $('[data-toggle = "tooltip"]').tooltip();
+
       $('.modal').modal();
     });
 
-     $('#editstock').on('click',function(){
+
+
+    $('#cost_per_ton').on('click',function(){
+      $('.modal').hide();
+    });
+
+    $('#editstock').on('click',function(){
       $('.modal').modal();
     });
 
-   });
+  });
 
- </script>
+</script>
 </body>
 </html>

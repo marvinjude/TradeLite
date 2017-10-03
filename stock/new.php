@@ -1,13 +1,19 @@
 <?php
 $connection = include('../resources/conection.inc.php');
 session_start();
-ob_start();
-echo stockexist('10MM');
+if(!isset($_SESSION['user'])){
+  header("Location: ../");
+}
+
+
 if (isset($_POST['newstock'])){
   $description = trim(mysqli_real_escape_string($connection, htmlentities($_POST['description'])));
+  //preg_match('^[0-9]{2} \s[a-zA-Z]{2} ', $description)
   $cost_per_ton = mysqli_real_escape_string($connection, htmlentities($_POST['cost_per_ton']));
   $date_created = date('Y/m/d');
   $last_receive_date  =date('Y/m/d');
+
+
 
   if (!stockexist($description)){
 
@@ -17,14 +23,14 @@ if (isset($_POST['newstock'])){
     //echo $query;
 
     if (mysqli_query($connection, $query)) {
+
+      $_SESSION['create_stock_success'] = "success";
     } else {
       echo "Error: " . $query . "<br>" . mysqli_error($mysqli);
     }
 
   }else{
-    $SESSION['create_stock_error'] = 'error';
-    echo 'this product don dey createed';
-    var_dump( $SESSION['create_stock_error']);
+    $_SESSION['create_stock_error'] = 'error';
   }
 
 }
@@ -33,13 +39,13 @@ if (isset($_POST['newstock'])){
 
 function stockexist($description){
   global $connection;
-  $query = "SELECT * FROM stocks WHERE description = 'description' ";
+  $query = "SELECT * FROM stocks WHERE description = '$description' ";
   if ($result = mysqli_query($connection,$query)){
 
 
- echo  mysqli_num_rows($result);
+   mysqli_num_rows($result);
 
-    
+
    if (mysqli_num_rows($result) > 0) {
     return true;
   }else{
@@ -50,6 +56,18 @@ function stockexist($description){
 }
 }
 ?>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -64,7 +82,7 @@ function stockexist($description){
   <!-- Bootstrap 3.3.6 -->
   <link rel="stylesheet" href="../css/bootstrap/css/bootstrap.min.css">
   <!-- Font Awesome -->
-  <!-- <link rel="stylesheet" href="css/font-awesome.min.css"> -->
+  <link rel="stylesheet" href="../css/font-awesome.min.css"> 
   <!-- Ionicons -->
   <link rel="stylesheet" href="../css/ionicons.min.css">
   <!-- Theme style -->
@@ -74,14 +92,17 @@ function stockexist($description){
   <link rel="stylesheet" href="../css/skins/_all-skins.min.css">
   <!-- iCheck -->
   <link rel="stylesheet" href="../plugins/iCheck/flat/blue.css">
+
+
+  <link rel="stylesheet" href="../css/animate.min.css">
   <!-- Morris chart -->
   <link rel="stylesheet" href="../plugins/morris/morris.css">
   <!-- jvectormap -->
   <link rel="stylesheet" href="../plugins/jvectormap/jquery-jvectormap-1.2.2.css">
   <!-- Date Picker -->
-  <link rel="stylesheet" href="../plugins/datepicker/datepicker3.css">
+
   <!-- Daterange picker -->
-  <link rel="stylesheet" href="../plugins/daterangepicker/daterangepicker.css">
+
   <!-- bootstrap wysihtml5 - text editor -->
   <link rel="stylesheet" href="../plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
 
@@ -150,16 +171,23 @@ function stockexist($description){
 
                     <?php
 
-                    $alert =  "<div class='alert alert-danger alert-dismissible'>
+                    $alert_error =  "<div class='alert  alert-danger alert-dismissible animated bounce'>
                     <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
                     <h4><i class='icon fa fa-ban'></i> This Stock Already Exist!</h4>
                     Sorry you can't create stock that already exists- make sure the product you are creating 
                   </div>";
+                   
+                   $alert_success = "<div class='alert  alert-success alert-dismissible animated bounce'>
+                    <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+                    <h4><i class='icon fa fa-ban'></i> Stock Created Successfully</h4>
+                  </div>";
 
-
-                  if(isset($_SESSION['create_stock_error'])){
-                    echo $alert;
+                  if(isset($_SESSION['create_stock_error']) &&!empty($_SESSION['create_stock_error'])){
+                    echo $alert_error;
                     unset($_SESSION['create_stock_error']);
+                  }elseif (isset($_SESSION['create_stock_success'])) {
+                    echo $alert_success;
+                    unset($_SESSION['create_stock_success']);
                   }
 
                   ?>
@@ -180,6 +208,7 @@ function stockexist($description){
                           <label>Cost per ton</label>
                           <input name = 'cost_per_ton' type="number" class="form-control" placeholder="Enter The Price per ton" required>
                         </div>
+
                         <!-- /.form-group -->
                         <input type="submit" name = 'newstock' class="btn btn-primary pull-right" value = "Create New Stock"> </button>
                       </form>
@@ -207,14 +236,23 @@ function stockexist($description){
 
 
 
-<script src="js/jquery-2.2.3.min.js"></script>
+<script src="../js/jquery-2.2.3.min.js"></script>
 <!-- Bootstrap 3.3.6 -->
-<script src="js/bootstrap.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
 <!-- FastClick -->
-<script src="js/fastclick.min.js"></script>
+<script src="../js/fastclick.min.js"></script>
 <!-- AdminLTE App -->
-<script src="dist/js/app.min.js"></script>
+<script src="../dist/js/app.min.js"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="dist/js/demo.js"></script> 
+<script src="../dist/js/demo.js"></script> 
+<script type="text/javascript">
+  
+  $('document').ready(function(){
+    setTimeout(function(){ $('.alert').fadeOut()},3000);
+  });
+
+
+  
+</script>
 </body>
 </html>

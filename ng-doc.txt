@@ -1,38 +1,70 @@
-fix ithe __DIR in the const file 
-edit the link to to use the constant to the temoplateds specified in the conf file 
-#drop dashboard
+______________TO_FIX________________
+Files                 Status
+________________|_____________________
+                |
+#customer/view  |
+#expenses/view  |
+ allow the invoice number to be changed
+ allow quantity per ton               |
+                |
 
 
+______________TO_DO_________________
+description               Status
+________________|_____________________
+                |
+#install Mpdf   |  done
+# |
+
+________________________________________________________________________
+|              ABOUT THE PDF INVOICE GENERATION SALE                    |
+|_______________________________________________________________________|
+1. submit sales data via ajax
+2  on submit
+3. window.location to the report generator  PHP file 
+4.report.PHP fetch data from db MPDF render html of the invoice as pdf
+________________________________________________________________________
 
 
-username: ALHAJI
-password: RAMADAN
+ABOUT REPRINTING INVOICES
+________________________________________________________________________
+1. get invoice number 
+2. report.PHP file fetches data from db for MPDF to to render to pdf from HTML
+______________________________________________________________________________
 
+customer(name,phone,date_registered)    (done)
 
 stock
-   receive stock
+   receive stock                          (done)
       add date in to receive stock
 
 Enq 
-   
-  - view shop stock (stock name, desc, Qty, cost/price per ton )
+  - view daily tranaction
+  - view shop stock (stock name, desc, Qty, cost/price per ton )   (done)
   - view daily expenses 
-    - show |-------------|------------|
-              start date - End Date 
+    - show |-------------|------------|(done)
+              start date - End Date    (done)
     -
+
+
+- post daily expenses        (done)
+     expennse name : transport /lunch /...
+     amount : 
+     date : 
+        save expense goto view expense 
+
+ -view all Expenses (done)  
+ 
+
 
 sale(object):
   -sell (post sales to customer)
      customer name , invoice NO(system generated), date, stock name , 
       quantity sold,  price per ton(from db), quantity per ton (user input ),Amount = formulae(),checkbox(is item supplied?),if yes -showInvoice for printing, else reload page, save last customer to session and select it on page reload for customer field
   
-- post daily expenses 
-     expennse name : transport /lunch /...
-     amount : 
-     date : 
-        save expense goto view expense 
 
- -view all Expenses 
+
+ 
 
  -post brought foward (B/F)
 

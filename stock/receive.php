@@ -2,6 +2,7 @@
 
 $connection = include('../resources/conection.inc.php');
 
+
 if(isset ($_POST['receive_stock'])){
   $quantity_received = $_POST['quantity_received'];
   $quantity_received = mysqli_real_escape_string($connection,htmlentities($quantity_received));
@@ -17,10 +18,12 @@ if(isset ($_POST['receive_stock'])){
 
   $new_quantity = $previous_quantity + $quantity_received;
 
-  update('stocks','quantity_in_store',$new_quantity,
+  if (update('stocks','quantity_in_store',$new_quantity,
     array("field"=> 'description',
       "value"=> $productdescription
-      ));
+      ))){
+         $_SESSION['receive_stock_success'] = 'success';
+  }
 //$table,$field,$newvalue,$selection_condition = array()
 
 
@@ -35,7 +38,7 @@ function get($table,$field,$where){
   $condition = (object)$where;
   $query = "SELECT $field FROM $table". " WHERE ". $condition->field . ' = ' . 
   "'". $condition->value. "'";
-  echo $query;
+  $query;
   if($result = mysqli_query($connection,$query)){
 
     for($i = 0; $i< mysqli_num_rows($result); $i++){
@@ -75,7 +78,7 @@ function update($table,$field,$newvalue,$selection_condition = array()){
   global $connection;
   $selection_condition = (object)$selection_condition;
 
-  echo $query = "UPDATE  $table SET $field = $newvalue WHERE 
+   $query = "UPDATE  $table SET $field = $newvalue WHERE 
   $selection_condition->field ='$selection_condition->value'  ";
   if (mysqli_query($connection,$query)){
     return true;
@@ -104,6 +107,9 @@ function update($table,$field,$newvalue,$selection_condition = array()){
   <!-- Font Awesome -->
   <!-- <link rel="stylesheet" href="css/font-awesome.min.css"> -->
   <!-- Ionicons -->
+
+  <link rel="stylesheet" href="../css/animate.min.css">
+
   <link rel="stylesheet" href="../css/ionicons.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="../css/AdminLTE.min.css">
@@ -182,6 +188,20 @@ function update($table,$field,$newvalue,$selection_condition = array()){
 
                   <div class="box-body">
                     <div class="row">
+                     <div class="col-md-4">
+                  <?php
+                    $alert = "<div class='alert  alert-success alert-dismissible animated slideInLeft'>
+                    <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+                    <h4><i class='icon fa fa-ban'></i> Stock Received</h4>";
+
+                    if(isset($_SESSION['receive_stock_success'])){
+                      echo $alert;
+                      unset($_SESSION['receive_stock_success']);
+                    }
+                  ?>
+                  </div>
+                  </div>
+
                       <div class="col-md-12">
 
                         <div class="form-group">
@@ -195,7 +215,7 @@ function update($table,$field,$newvalue,$selection_condition = array()){
                         <!-- /.form-group -->
                         <div class="form-group">
                           <label>Quantity Received</label>
-                          <input type="text" class="form-control" name = 'quantity_received' placeholder="Enter No.Of Quantity Received For This Stock">
+                          <input type="number" class="form-control" name = 'quantity_received' placeholder="Enter No.Of Quantity Received For This Stock">
                         </div>
                         <!-- /.form-group -->
 
@@ -227,7 +247,7 @@ function update($table,$field,$newvalue,$selection_condition = array()){
 
 
 
-<script src="js/jquery-2.2.3.min.js"></script>
+<script src="../js/jquery-2.2.3.min.js"></script>
 <!-- Bootstrap 3.3.6 -->
 <script src="js/bootstrap.min.js"></script>
 <!-- FastClick -->
@@ -236,5 +256,11 @@ function update($table,$field,$newvalue,$selection_condition = array()){
 <script src="dist/js/app.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="dist/js/demo.js"></script> 
+<script type="text/javascript">
+    $('document').ready(function(){
+    setTimeout(function(){ $('.alert').fadeOut()},3000);
+  });
+
+</script>
 </body>
 </html>

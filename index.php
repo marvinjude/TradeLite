@@ -5,58 +5,65 @@
      if(isset($_SESSION['user']))
      {
       header("location:stock/new.php");
-     }
+    }
 
     if (isset($_POST['submit']))
     { 
       $username = htmlentities($_POST['username']);
-      $username = strtoupper(mysqli_real_escape_string($mysqli,$username));
-      echo $username;
+      $username = strtoupper(mysqli_real_escape_string($connection,$username));
+
 
       $password = htmlentities($_POST['password']);
-      $password = strtoupper(mysqli_real_escape_string($mysqli,$password));
-      $password = md5($password);
+      $password = strtoupper(mysqli_real_escape_string($connection,$password));
+      //$password = md5($password);
 
-      $query = "SELECT * FROM users where username = '$username' and password = '$password'";
-      $result = mysqli_query($mysqli, $query);
+      $query = "SELECT * FROM users where username = '$username' AND password = '$password'";
+       echo $query;
+      $result = mysqli_query($connection, $query);
       $count = mysqli_num_rows($result);
+      echo $count;
 
       if($count == 1)
       {
-        $data = mysqli_fetch_assoc($run_query);
+        $data = mysqli_fetch_assoc($result);
         $_SESSION['user'] = serialize($_POST);
         header("location:stock/new.php");   // this seems to be the mos uses  page 
       }   
       else
       {
-        echo "<div class='alert alert-dismissable alert-danger'>
-        <center><i class='fa fa-fw fa-times'></i>&nbsp; <strong>ERROR!</strong> INCORRECT USERNAME OR PASSWORD</center>
-      </div>";
+        $_SESSION['login_error'] = 'error';
+      //   echo "<div class='alert alert-dismissable alert-danger'>
+      //   <center><i class='fa fa-fw fa-times'></i>&nbsp; <strong>ERROR!</strong> INCORRECT USERNAME OR PASSWORD</center>
+      // </div>";
+      }
+
     }
-
-  }
-  ?>
+    ?>
 
 
-  <!DOCTYPE html>
-  <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AdminLTE 2 | General Form Elements</title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- Bootstrap 3.3.6 -->
-    <link rel="stylesheet" href="css/bootstrap/css/bootstrap.min.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="css/font-awesome.min.css">
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="css/ionicons.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="css/AdminLTE.min.css">
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <title>AdminLTE 2 | General Form Elements</title>
+      <!-- Tell the browser to be responsive to screen width -->
+      <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+      <!-- Bootstrap 3.3.6 -->
+      <link rel="stylesheet" href="css/bootstrap/css/bootstrap.min.css">
+      <!-- Font Awesome -->
+      
+      <!-- Ionicons -->
+      <link rel="stylesheet" href="css/ionicons.min.css">
+      <!-- Theme style -->
+      <link rel="stylesheet" href="css/AdminLTE.min.css">
+
+      <link rel="stylesheet" href="css/animate.min.css">
   <!-- AdminLTE Skins. Choose a skin from the css/skins
   folder instead of downloading all of them to reduce the load. -->
-  <link rel="stylesheet" href="css/skins/_all-skins.min.css">
+       <link rel="stylesheet" href="css/skins/_all-skins.min.css">
+
+        <link rel="stylesheet" href="css/font-awesome.css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -69,6 +76,10 @@
 
     .center-div{
       margin-top:10%;
+    }
+
+    input {
+      text-transform: uppercase;
     }
 
   </style>
@@ -111,48 +122,64 @@
 <div class= "container-fluid">
   <div class = "row">
     <div class = "col col-md-4 col-xs-12 col-sm-4 col-xs-10 col-xs-offset-1 col-md-offset-4 center-div">
-      <div class="box box-info">
-        <div class="box-header with-border">
-          <h3 class="box-title">Login</h3>
-        </div>
-        <!-- /.box-header -->
-        <!-- form start -->
-        <form class="form-horizontal" method = 'POST' action = '<?php echo $_SERVER['PHP_SELF']?>'>
-          <div class="box-body">
-            <div class="form-group">
-              <label for="inputEmail3" class="col-sm-2 control-label">Username</label>
 
-              <div class="col-sm-10">
-                <input type="text" class="form-control" id="inputEmail3" autocomplete="false"  placeholder="Email" name = 'username'>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+      <?php if (isset($_SESSION['login_error']) && ! empty($_SESSION['login_error'])){
+       $error_message= " <div class='alert alert-danger alert-dismissible animated bounce'>
+       <button type='button' class='close' data-dismiss= 'alert' aria-hidden='true'>&times;</button>
+       <h4><i class='icon fa fa-ban'></i> Error!</h4>
+       Incorrect Username And Password combination!
+     </div>";
+     echo $error_message;
+     unset($_SESSION['login_error']);
+   }
 
-              <div class="col-sm-10">
-                <input type="password" class="form-control" id="inputPassword3" placeholder="Password" name = 'password'>
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="col-sm-offset-2 col-sm-10">
-                <div class="checkbox">
-                  <label>
-                    <input type="checkbox"> Remember me
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- /.box-body -->
-          <div class="box-footer">
+   ?>
 
-            <button type="submit" name = 'submit' class="btn btn-info pull-right">Sign in</button>
-          </div>
-          <!-- /.box-footer -->
-        </form>
-      </div>
+
+
+   <div class="box box-info">
+
+    <div class="box-header with-border">
+      <h3 class="box-title">Login</h3>
     </div>
+    <!-- /.box-header -->
+    <!-- form start -->
+    <form class="form-horizontal" method = 'POST' action = '<?php echo $_SERVER['PHP_SELF']?>'>
+      <div class="box-body">
+        <div class="form-group">
+          <label for="inputEmail3" class="col-sm-2 control-label">Username</label>
+
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="inputEmail3" autocomplete="false"  placeholder="Email" name = 'username'>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+
+          <div class="col-sm-10">
+            <input type="password" class="form-control" id="inputPassword3" placeholder="Password" name = 'password'>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox"> Remember me
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /.box-body -->
+      <div class="box-footer">
+
+        <button type="submit" name = 'submit' class="btn btn-info pull-right">Sign in</button>
+      </div>
+      <!-- /.box-footer -->
+    </form>
   </div>
+</div>
+</div>
 </div>
 <script src=".js/jquery-2.2.3.min.js"></script>
 <!-- Bootstrap 3.3.6 -->

@@ -9,8 +9,8 @@ defined("SIDENAV")
 defined('STOCK')
    or  define('STOCK', dirname(dirname(__FILE__)).  '/stock');
 
-// defined("NEW_STOCK")
-//    or  define('NEW_STOCK', realpath(dirname(__FILE__)). '../../stock/new.php');
+defined("WEB_ROOT")
+   or  define('WEB_ROOT', realpath(dirname(__FILE__)). '../../stock/new.php');
 
 // defined("VIEW_STOCK")
 //    or  define('VIEW_STOCK', realpath(dirname(__FILE__)). '../../stock/view.php');
