@@ -3,9 +3,9 @@
 	<!-- Logo -->
 	<a href="index2.html" class="logo">
 		<!-- mini logo for sidebar mini 50x50 pixels -->
-		<span class="logo-mini"><b>ALH</b>AJI</span>
+		<span class="logo-mini"></span>
 		<!-- logo for regular state and mobile devices -->
-		<span class="logo-lg"><b>ALHAJI-</b>OWODE</span>
+		<span class="logo-lg"><b>MUKAZ NIG. LTD.</b></span>
 	</a>
 	<!-- Header Navbar: style can be found in header.less -->
 	<nav class="navbar navbar-static-top">

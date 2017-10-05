@@ -4,29 +4,29 @@ $connection = include('../resources/conection.inc.php');
 
 // customer=10+-+JUDE+-+098888678&customer_phone=888&customer_address=2017-09-02&create_deposit=Deposit
 
-if (isset($_POST['create_deposit']) && $_POST['customer'] !== ''){
+if (isset($_POST['create_deposit'])){
+	if($_POST['customer'] != ''){
 	$customer_id  = fetch_id($_POST['customer']);
 	$amount_deposited = mysqli_real_escape_string($connection, htmlentities($_POST['amount_deposited']));
 	$date_created = mysqli_real_escape_string($connection, htmlentities($_POST['date_created']));
 
 	$query = "INSERT INTO customer_deposits (customer_id,amount_deposited,date_deposited) VALUES ('$customer_id','$amount_deposited','$date_created')";
-    echo $query;
-    if(mysqli_query($connection,$query)){
-    	$_SESSION['deposit_created'] = 'success';
-    }else{
-    	$_SESSION['deposit_create_error'] = 'error';
-    }
-	
+	if(mysqli_query($connection,$query)){
+		$_SESSION['deposit_created'] = 'success';
+	}else{
+		$_SESSION['deposit_create_error'] = 'error';
+	}
 
 
-}else {
-   $_SESSION['select_a_customer'] = 'error';
+}else{
+	$_SESSION['select_a_customer'] = 'error';
 }
 
+}
 
 function fetch_id($form_customer_selction){
- $data = explode('-',$form_customer_selction);
- return trim($data[0]);
+	$data = explode('-',$form_customer_selction);
+	return trim($data[0]);
 }
 
 function get_all($table){
@@ -90,41 +90,41 @@ function phone_exist($phone){
 	<!-- Theme style -->
 	<link rel="stylesheet" href="../css/AdminLTE.min.css">
   <!-- AdminLTE Skins. Choose a skin from the css/skins
-  folder instead of downloading all of them to reduce the load. -->
-  <link rel="stylesheet" href="../css/skins/_all-skins.min.css">
+  	folder instead of downloading all of them to reduce the load. -->
+  	<link rel="stylesheet" href="../css/skins/_all-skins.min.css">
 
-  <link rel="stylesheet" href="../plugins/select2/select2.min.css">
-  <!-- iCheck -->
-  <link rel="stylesheet" href="../plugins/iCheck/flat/blue.css">
+  	<link rel="stylesheet" href="../plugins/select2/select2.min.css">
+  	<!-- iCheck -->
+  	<link rel="stylesheet" href="../plugins/iCheck/flat/blue.css">
 
-  <link rel="stylesheet" href="../css/animate.min.css">
-  <!-- Morris chart -->
-  <link rel="stylesheet" href="../plugins/morris/morris.css">
-  <!-- jvectormap -->
-  <link rel="stylesheet" href="../plugins/jvectormap/jquery-jvectormap-1.2.2.css">
-  <!-- Date Picker -->
-  <link rel="stylesheet" href="../plugins/datepicker/datepicker3.css">
-  <!-- Daterange picker -->
-  <link rel="stylesheet" href="../plugins/daterangepicker/daterangepicker.css">
+  	<link rel="stylesheet" href="../css/animate.min.css">
+  	<!-- Morris chart -->
+  	<link rel="stylesheet" href="../plugins/morris/morris.css">
+  	<!-- jvectormap -->
+  	<link rel="stylesheet" href="../plugins/jvectormap/jquery-jvectormap-1.2.2.css">
+  	<!-- Date Picker -->
+  	<link rel="stylesheet" href="../plugins/datepicker/datepicker3.css">
+  	<!-- Daterange picker -->
+  	<link rel="stylesheet" href="../plugins/daterangepicker/daterangepicker.css">
 
 
-  <!-- bootstrap wysihtml5 - text editor -->
-  <link rel="stylesheet" href="../plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+  	<!-- bootstrap wysihtml5 - text editor -->
+  	<link rel="stylesheet" href="../plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
 
-  <link rel="stylesheet" href="../css/ionicons.min.css">
+  	<link rel="stylesheet" href="../css/ionicons.min.css">
 
-  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
-  <style type="text/css">
-  	.edit{
-  		cursor: pointer;
-  		padding:10px;
-  	}
-  </style>
+<![endif]-->
+<style type="text/css">
+.edit{
+	cursor: pointer;
+	padding:10px;
+}
+</style>
 
 </head>
 
@@ -186,71 +186,71 @@ function phone_exist($phone){
 												$alert ="<div class='alert  alert-success alert-dismissible animated slideInLeft'>
 												<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
 												<i class='glyphicon glyphicon-ok'></i> Deposit Created Successfully
-											</div>";
+												</div>";
 
-											$alert2 ="<div class='alert  alert-danger alert-dismissible animated slideInLeft'>
-											<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
-											<i class='glyphicon glyphicon-ban-circle'></i> Unable to Create Deposit - Please select a Customer 
-										</div>";
-
-
-									if(isset($_SESSION['deposit_created'])){
-										echo $alert;
-										unset($_SESSION['deposit_created']);
-
-									}elseif (isset($_SESSION['select_a_customer'])) {
-										unset($_SESSION['select_a_customer']);
-										echo $alert2;
-									}
+												$alert2 ="<div class='alert  alert-danger alert-dismissible animated slideInLeft'>
+												<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+												<i class='glyphicon glyphicon-ban-circle'></i> Unable to Create Deposit - Please select a Customer 
+												</div>";
 
 
+												if(isset($_SESSION['deposit_created'])){
+													echo $alert;
+													unset($_SESSION['deposit_created']);
+
+												}elseif (isset($_SESSION['select_a_customer'])) {
+													unset($_SESSION['select_a_customer']);
+													echo $alert2;
+												}
 
 
-									?>
 
-								</div>
 
-								<div class="col-md-12">
-									<form method="POST" action = "<?php echo $_SERVER['PHP_SELF']?>">
-										<div class="form-group">
+												?>
 
-											<div class="form-group">
-												<label>Customer</label>
-												<select class="form-control select2" style=" width: 100%;"
-												 name = "customer" >
-													<option></option>
-													<?php $all_data = get_all('customers')?>
-													<?php foreach ($all_data as $row): ?>
-													<option>
-														<?= $row['id']. " - ".strtoupper($row['customer_name']) . " - ".$row['customer_phone']?>
-													</option>
-												<?php endforeach ?>
-											</select>
+											</div>
+
+											<div class="col-md-12">
+												<form method="POST" action = "<?php echo $_SERVER['PHP_SELF']?>">
+													<div class="form-group">
+
+														<div class="form-group">
+															<label>Customer</label>
+															<select class="form-control select2" style=" width: 100%;"
+															name = "customer" >
+															<option></option>
+															<?php $all_data = get_all('customers')?>
+															<?php foreach ($all_data as $row): ?>
+																<option>
+																	<?= $row['id']. " - ".strtoupper($row['customer_name']) . " - ".$row['customer_phone']?>
+																</option>
+															<?php endforeach ?>
+														</select>
+													</div>
+
+													<!-- /.form-group -->
+													<div class="form-group">
+														<label> Amount Deposited</label>
+														<input type="number" class="form-control" placeholder="Enter Customer Number" name = "amount_deposited"
+														pattern="[0-9]{11}"  required>
+													</div>
+
+													<div class="form-group">
+														<label> Date</label>
+														<input  type="date" class="form-control" placeholder="Enter Customer Address" name = "date_created" required>
+													</div>
+
+													<!-- /.form-group -->
+													<input type="submit" name = 'create_deposit' class="btn btn-primary pull-right" value = "Deposit"> </button>
+												</form>
+											</div>
+											<!-- /.col -->
+
+											<!-- /.col -->
 										</div>
-
-										<!-- /.form-group -->
-										<div class="form-group">
-											<label> Amount Deposited</label>
-											<input type="number" class="form-control" placeholder="Enter Customer Number" name = "amount_deposited"
-											pattern="[0-9]{11}"  required>
-										</div>
-
-										<div class="form-group">
-											<label> Date</label>
-											<input  type="date" class="form-control" placeholder="Enter Customer Address" name = "date_created" >
-										</div>
-
-										<!-- /.form-group -->
-										<input type="submit" name = 'create_deposit' class="btn btn-primary pull-right" value = "Deposit"> </button>
-									</form>
-								</div>
-								<!-- /.col -->
-
-								<!-- /.col -->
-							</div>
-							<!-- /.row -->
-						</div>
-						<!-- /.box-body -->
+										<!-- /.row -->
+									</div>
+									<!-- /.box-body -->
           <!-- <div class="box-footer">
             Visit <a href="https://select2.github.io/">Select2 documentation</a> for more examples and information about
             the plugin.

@@ -1,7 +1,7 @@
-     <?php
-     $connection =  include_once('resources/conection.inc.php');
-     
+     <?php 
      session_start();
+     $connection =  include_once('resources/conection.inc.php');
+
      if(isset($_SESSION['user']))
      {
       header("location:stock/new.php");
@@ -18,10 +18,9 @@
       //$password = md5($password);
 
       $query = "SELECT * FROM users where username = '$username' AND password = '$password'";
-       echo $query;
+      // echo $query;
       $result = mysqli_query($connection, $query);
       $count = mysqli_num_rows($result);
-      echo $count;
 
       if($count == 1)
       {
@@ -32,9 +31,8 @@
       else
       {
         $_SESSION['login_error'] = 'error';
-      //   echo "<div class='alert alert-dismissable alert-danger'>
-      //   <center><i class='fa fa-fw fa-times'></i>&nbsp; <strong>ERROR!</strong> INCORRECT USERNAME OR PASSWORD</center>
-      // </div>";
+        echo 'false data';
+
       }
 
     }
@@ -60,33 +58,33 @@
 
       <link rel="stylesheet" href="css/animate.min.css">
   <!-- AdminLTE Skins. Choose a skin from the css/skins
-  folder instead of downloading all of them to reduce the load. -->
-       <link rel="stylesheet" href="css/skins/_all-skins.min.css">
+    folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="css/skins/_all-skins.min.css">
 
-        <link rel="stylesheet" href="css/font-awesome.css">
+    <link rel="stylesheet" href="css/font-awesome.css">
 
-  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
-  <style type="text/css">
+<![endif]-->
+<style type="text/css">
 
 
-    .center-div{
-      margin-top:10%;
-    }
+.center-div{
+  margin-top:10%;
+}
 
-    input {
-      text-transform: uppercase;
-    }
+input {
+  text-transform: uppercase;
+}
 
-  </style>
+</style>
 </head>
 
 
-<body class="hold-transition skin-blue sidebar-mini">   
+<body class="hold-transition skin-blue sidebar-mini" style = 'background-color: whitesmoke '>   
 
  <header class="main-header">
   <!-- Logo -->
@@ -123,60 +121,50 @@
   <div class = "row">
     <div class = "col col-md-4 col-xs-12 col-sm-4 col-xs-10 col-xs-offset-1 col-md-offset-4 center-div">
 
-      <?php if (isset($_SESSION['login_error']) && ! empty($_SESSION['login_error'])){
-       $error_message= " <div class='alert alert-danger alert-dismissible animated bounce'>
-       <button type='button' class='close' data-dismiss= 'alert' aria-hidden='true'>&times;</button>
-       <h4><i class='icon fa fa-ban'></i> Error!</h4>
-       Incorrect Username And Password combination!
-     </div>";
-     echo $error_message;
-     unset($_SESSION['login_error']);
-   }
-
-   ?>
 
 
 
-   <div class="box box-info">
+     <div class="box box-primary box-solid no-border">
+      <div class="box-header with-border">
+        <h3 class="box-title">Login</h3>
+      </div>
+      <!-- /.box-header -->
+      <!-- form start --> 
+      <div class="box-body" style="padding: 30px">
+        <form class="form-horizontal" method = 'POST' action = '<?php echo $_SERVER['PHP_SELF']?>'>
 
-    <div class="box-header with-border">
-      <h3 class="box-title">Login</h3>
-    </div>
-    <!-- /.box-header -->
-    <!-- form start -->
-    <form class="form-horizontal" method = 'POST' action = '<?php echo $_SERVER['PHP_SELF']?>'>
-      <div class="box-body">
-        <div class="form-group">
-          <label for="inputEmail3" class="col-sm-2 control-label">Username</label>
+          <div class="form-group holder ">
+           <label for="inputEmail3" control-label">Username</label>
+           <input type="text" class="form-control  " id="inputEmail3" autocomplete="false"  placeholder="Email" name = 'username'>
+         </div>
 
-          <div class="col-sm-10">
-            <input type="text" class="form-control" id="inputEmail3" autocomplete="false"  placeholder="Email" name = 'username'>
-          </div>
+         <div class="form-group holder">
+          <label for="inputPassword3"  control-label">Password</label>
+          <input type="password" class="form-control " id="inputPassword3" placeholder="Password" name = 'password'>
         </div>
-        <div class="form-group">
-          <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
 
-          <div class="col-sm-10">
-            <input type="password" class="form-control" id="inputPassword3" placeholder="Password" name = 'password'>
-          </div>
-        </div>
         <div class="form-group">
-          <div class="col-sm-offset-2 col-sm-10">
-            <div class="checkbox">
-              <label>
-                <input type="checkbox"> Remember me
-              </label>
-            </div>
+          <div class="checkbox">
+            <label>
+              <input type="checkbox"> Remember me
+            </label>
           </div>
+
         </div>
+
+
+
       </div>
       <!-- /.box-body -->
       <div class="box-footer">
 
         <button type="submit" name = 'submit' class="btn btn-info pull-right">Sign in</button>
+
+        <a href="signup.php"  name = 'SignUp' class="btn btn-success pull-left">Register</a>
       </div>
-      <!-- /.box-footer -->
     </form>
+    <!-- /.box-footer -->
+
   </div>
 </div>
 </div>
@@ -186,6 +174,27 @@
 <script src="js/bootstrap.min.js"></script>
 <!-- FastClick -->
 <script src="js/fastclick.min.js"></script>
+<script type="text/javascript">
+
+  $('document').ready(function () {
+    var error  = "<span class='help-block'>Passwords Do not match</span>";
+    $('input').click(function(){
+      $('.holder').removeClass('has-error');
+      $('help-block').slideUp();
+    });
+    <?php
+
+    if(isset($_SESSION['login_error'])){
+        //echo "console.log('pworderr');";
+      echo "$('.holder').addClass('has-error');";
+      echo "$('.holder').append(error);";
+      unset($_SESSION['login_error']);
+    }
+    ?>
+
+  });
+  
+</script>
 <!-- AdminLTE App -->
 <!-- <script src="../../dist/js/app.min.js"></script> -->
 <!-- AdminLTE for demo purposes -->

@@ -1,12 +1,18 @@
 <?php session_start();
-  require_once('../functions/invoice_functions.php');
+require_once('../functions/invoice_functions.php');
+$connection = include('../resources/conection.inc.php');
   // check if the request method if get 
-   if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-      if(!empty($_GET['id'])){
-          header('Location:  ')
-      }
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+  if(empty($_GET['id'])){
+    header('Location: sell.php');
   }
+  $sale_id = mysqli_real_escape_string($connection,$_GET['id']);
+  $invoice_data = getPreparedInvoiceData($sale_id,$connection);
+
+  $sale = getSaleByID($sale_id,$connection);
   
+}
+
 ?>
 
 
@@ -42,7 +48,7 @@ img{
 }
 
 .margin-5{
-    margin:5px;
+  margin:5px;
 }
 
 .inline{
@@ -63,10 +69,10 @@ img{
 
 </style>
 </head>
-<body onload="">
+<body onload="print()">
   <div class = 'container' >
     <div class = 'row'>
-      <div class = 'col col-md-10 col-md-offset-1'> 
+      <div class = 'col col-md-10 col-lg-10 col-md-offset-1'> 
         <div class="wrapper">
           <!-- Main content -->
           <section class="invoice">
@@ -81,15 +87,24 @@ img{
             <!-- <other invoice details> -->
               <div class="row invoice-details" >
                 <div class="col-md-4 col-sm-4 col-xs-4 centered">
-                  <h3 class = 'inline'>Invoice Number:</h3> <h3 class='inline'>7878655</h3>
+                  <h3 class = 'inline'>Invoice Number:</h3>
+                  <h3 class='inline'>
+                    <?php echo $sale['invoice_number']?>
+                  </h3>
                 </div>
 
                 <div class="col-md-4 col-sm-4 col-xs-4 centered" >
-                  <h3 class = 'inline '>Date:</h3> <h3 class='inline align-right'>23/07/2017</h3>
+                  <h3 class = 'inline'>Date:</h3> 
+                  <h3 class='inline align-right'>
+                    <?php echo $sale['sale_date']?>
+                  </h3>
                 </div>
 
                 <div class="col-md-4 col-sm-4  centered">
-                  <h3 class = 'inline '>Customer Name:</h3> <h3 class='inline'>Jude</h3>
+                  <h3 class = 'inline '>Customer Name:</h3> 
+                  <h3 class='inline'>
+                  <?php echo $sale['customer_name']?>
+                  </h3>
                 </div>
                 <!-- /.col -->
               </div>
@@ -102,7 +117,7 @@ img{
                     <thead>
                       <tr>
                         <th>S/N</th>
-                       <th>Item Description</th>
+                        <th>Item Description</th>
                         <th>Price Per Ton</th>
                         <th>Qty</th>
                         <th>Rate</th>
@@ -110,39 +125,24 @@ img{
                       </tr>
                     </thead>
                     <tbody>
-                      
-                      <tr>
-                        <td>1</td>
-                        <td>Need for Speed IV</td>
-                        <td>247-925-726</td>
-                        <td>Wes Anderson umami biodiesel</td>
-                        <td>$50.00</td>
-                        <td>$50.00</td>
-                      </tr>
-                      <tr>
-                        <td>1</td>
-                        <td>Monsters DVD</td>
-                        <td>735-845-642</td>
-                        <td>Terry Richardson helvetica tousled street art master</td>
-                        <td>$10.70</td>
-                        <td>$50.00</td>
-                      </tr>
-                      <tr>
-                        <td>1</td>
-                        <td>Call of Duty</td>
-                        <td>455-981-221</td>
-                        <td>El snort testosterone trophy driving gloves handsome</td>
-                        <td>$64.50</td>
-                        <td>$50.00</td>
-                      </tr>
-                      <tr>
-                        <td>1</td>
-                        <td>Grown Ups Blue Ray</td>
-                        <td>422-568-642</td>
-                        <td>Tousled lomo letterpress</td>
-                        <td>$25.99</td>
-                        <td>$50.00</td>
-                      </tr>
+
+                      <!-- generate the invoicce data  -->
+                      <?php foreach ($invoice_data as $row ): ?>
+
+                        <tr>
+                          <td><?=$row["S_N"]?></td>
+                          <td><?=$row["description"]?></td>
+                          <td><?=$row["price_per_ton"]?></td> 
+                          <td><?=$row["quantity"]?></td>
+                          <td><?=$row["rate"]?></td>
+                          <td><?=$row["total"]?></td>
+
+                        </tr>
+
+                      <?php endforeach ?>
+
+                      <!-- End of invoicd data genetration  -->
+
                     </tbody>
                   </table>
                 </div>
@@ -163,6 +163,7 @@ img{
                     Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles, weebly ning heekya handango imeem plugg dopplr
                     jibjab, movity jajah plickers sifteo edmodo ifttt zimbra.
                   </p> -->
+
                 </div>
                 <!-- /.col -->
                 <div class="col-xs-6">
@@ -171,19 +172,15 @@ img{
                     <table class="table table-bordered table-striped">
                      <tr>
                       <th style="width:50%">Total</th>
-                      <td>$250.30</td>
-                    </tr>
-                    <tr>
-                      <th style="width:50%">Total</th>
-                      <td>$250.30</td>
+                      <td><?php echo  ceil(getTotalFieldVal($invoice_data,'total'))?></td>
                     </tr>
                     <tr>
                       <th>Amount Paid </th>
-                      <td>$10.34</td>
+                      <td><?php echo  $sale['amount_paid'] ?></td>
                     </tr>
                     <tr>
                       <th>Outstanding</th>
-                      <td>$5.80</td>
+                      <td> <?php echo getOutStandingBalance($sale_id,$connection)?></td>
                     </tr>
                   </table>
                 </div>

@@ -176,7 +176,7 @@ function update($table,$field,$newvalue,$selection_condition = array()){
 
                <div class="box box-default">
                 <div class="box-header with-border">
-                  <h3 class="box-title">Select2</h3>
+                  <h3 class="box-title">Stock Acquisition Form</h3>
 
                   <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
@@ -249,13 +249,13 @@ function update($table,$field,$newvalue,$selection_condition = array()){
 
 <script src="../js/jquery-2.2.3.min.js"></script>
 <!-- Bootstrap 3.3.6 -->
-<script src="js/bootstrap.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
 <!-- FastClick -->
-<script src="js/fastclick.min.js"></script>
+<script src="../js/fastclick.min.js"></script>
 <!-- AdminLTE App -->
-<script src="dist/js/app.min.js"></script>
+<script src="../dist/js/app.min.js"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="dist/js/demo.js"></script> 
+<script src="../dist/js/demo.js"></script> 
 <script type="text/javascript">
     $('document').ready(function(){
     setTimeout(function(){ $('.alert').fadeOut()},3000);

@@ -5,16 +5,17 @@ $connection = include('../resources/conection.inc.php');
 
 if (isset($_POST['update_customer'])){
   $id = trim($_POST['id']);
-  $cost_per_ton = mysqli_real_escape_string($connection,htmlentities(trim($_POST['cost_per_ton'])));
-  update('stocks','cost_per_ton',$cost_per_ton, array("field"=> 'id', "value" => $id ));
+  $id = trim($_POST['id']);
+  $id = trim($_POST['id']);
+  $id = trim($_POST['id']);
+  echo $id;
 }
 
 
-function update($table,$field,$newvalue,$selection_condition = array()){
+function update(){
   global $connection;
-  $selection_condition = (object)$selection_condition;
 
-  $query = "UPDATE  $table SET $field = $newvalue WHERE 
+  $query = "UPDATE  customers SET $field = $newvalue WHERE 
   $selection_condition->field ='$selection_condition->value'  ";
   if (mysqli_query($connection,$query)){
     return true;
@@ -63,39 +64,39 @@ function get_all($table){
   <!-- Theme style -->
   <link rel="stylesheet" href="../css/AdminLTE.min.css">
   <!-- AdminLTE Skins. Choose a skin from the css/skins
-  folder instead of downloading all of them to reduce the load. -->
-  <link rel="stylesheet" href="../css/skins/_all-skins.min.css">
-  <!-- iCheck -->
-  <link rel="stylesheet" href="../plugins/iCheck/flat/blue.css">
+    folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="../css/skins/_all-skins.min.css">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="../plugins/iCheck/flat/blue.css">
 
-  <link rel="stylesheet" href="../css/animate.min.css">
-  <!-- Morris chart -->
-  <link rel="stylesheet" href="../plugins/morris/morris.css">
+    <link rel="stylesheet" href="../css/animate.min.css">
+    <!-- Morris chart -->
+    <link rel="stylesheet" href="../plugins/morris/morris.css">
 
-  <link rel="stylesheet" href="../plugins/datatables/dataTables.bootstrap.css">
-  <!-- jvectormap -->
-  <link rel="stylesheet" href="../plugins/jvectormap/jquery-jvectormap-1.2.2.css">
-  <!-- Date Picker -->
-  <link rel="stylesheet" href="../plugins/datepicker/datepicker3.css">
-  <!-- Daterange picker -->
-  <link rel="stylesheet" href="../plugins/daterangepicker/daterangepicker.css">
-  <!-- bootstrap wysihtml5 - text editor -->
-  <link rel="stylesheet" href="../plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+    <link rel="stylesheet" href="../plugins/datatables/dataTables.bootstrap.css">
+    <!-- jvectormap -->
+    <link rel="stylesheet" href="../plugins/jvectormap/jquery-jvectormap-1.2.2.css">
+    <!-- Date Picker -->
+    <link rel="stylesheet" href="../plugins/datepicker/datepicker3.css">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="../plugins/daterangepicker/daterangepicker.css">
+    <!-- bootstrap wysihtml5 - text editor -->
+    <link rel="stylesheet" href="../plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
 
-  <link rel="stylesheet" href="../css/ionicons.min.css">
+    <link rel="stylesheet" href="../css/ionicons.min.css">
 
-  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
-  <style type="text/css">
-    .edit{
-     cursor: pointer;
-     padding:10px;
-   }
- </style>
+<![endif]-->
+<style type="text/css">
+.edit{
+ cursor: pointer;
+ padding:10px;
+}
+</style>
 
 </head>
 
@@ -117,7 +118,7 @@ function get_all($table){
       <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
 
-   
+       
         <!-- start modal- modal for edit product/stock -->
         <div class="example-modal">
           <div class="modal animated pulse" >
@@ -137,7 +138,7 @@ function get_all($table){
                         <div class="form-group">
                           <label for="exampleInputEmail1">Name</label>
                           <input type="text" class="form-control" id ="customer_name"  
-                         >
+                          >
                         </div>
 
                         <div class="form-group">
@@ -182,136 +183,136 @@ function get_all($table){
 
 
 
-        <section class="content-header">
-          <h1>
-            View Stocks
-          </h1>       
-          <ol class="breadcrumb">
-            <li><a href="#"><i class="glyphicon glyphicon-search"></i> Home</a></li>
-            <li><a href="#">Customer</a></li>
-            <li class="active">View</li>
-          </ol>
-        </section>
-        <hr>
-        <div class = "container-fluid">
+          <section class="content-header">
+            <h1>
+              View Stocks
+            </h1>       
+            <ol class="breadcrumb">
+              <li><a href="#"><i class="glyphicon glyphicon-search"></i> Home</a></li>
+              <li><a href="#">Customer</a></li>
+              <li class="active">View</li>
+            </ol>
+          </section>
+          <hr>
+          <div class = "container-fluid">
 
-          <div class = "row">
+            <div class = "row">
 
 
 
-            <div class = 'col col-md-3'>
-             <div class="small-box bg-green animated slideInLeft">
-              <div class="inner">
-                <h3>
+              <div class = 'col col-md-3'>
+               <div class="small-box bg-green animated slideInLeft">
+                <div class="inner">
+                  <h3>
 
-                 <?php  
+                   <?php  
 
-                 $tabledata = get_all('stocks');
-                 echo count($tabledata);
+                   $tabledata = get_all('stocks');
+                   echo count($tabledata);
 
-                 ?>
+                   ?>
 
-               </h3>
+                 </h3>
 
-               <p>Top Buyer</p>
-             </div>
-             <div class="icon">
-              <i class="glyphicon glyphicon-star"></i>
+                 <p>Top Buyer</p>
+               </div>
+               <div class="icon">
+                <i class="glyphicon glyphicon-star"></i>
+              </div>
+              <a href="#" class="small-box-footer"> <i class="glyphicon glyphicon-calendar"></i></a>
             </div>
-            <a href="#" class="small-box-footer"> <i class="glyphicon glyphicon-calendar"></i></a>
+
           </div>
 
+
+
+          <div class = 'col col-md-3'>
+           <div class="small-box bg-aqua animated slideInLeft">
+            <div class="inner">
+              <h3>
+
+               <?php  
+
+               $tabledata = get_all('stocks');
+               echo count($tabledata);
+
+               ?>
+
+             </h3>
+
+             <p>Total Customers</p>
+           </div>
+           <div class="icon">
+            <i class="glyphicon glyphicon-th"></i>
+          </div>
+          <a href="#" class="small-box-footer"> <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+
+      </div>
+
+      <!-- data table col -->
+      <div class = 'col col-md-12'>
+        <div class="box with-border box-aqua">
+          <div class="box-header bg-aqua ">
+            <h3 class="box-title">Customers</h3>
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body">
+            <table id="example2" class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Customer Name</th>
+                  <th>Phone Number</th>
+                  <th>Registration Date</th>
+                  <th>Address</th>
+                  <th>Edit</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <?php  $datatable = get_all('customers');  ?>
+                <?php foreach ($datatable  as $row ): ?>
+                  <tr>
+                    <td><?= $row['id']?></td>
+                    <td><?=$row['customer_name']?></td>
+                    <td><?=$row['customer_phone']?></td>
+                    <td> <?=$row['date_created']?></td>
+                    <td><?=$row['address']?></td>
+                    <td ><span class=" btn btn-sm bg-green glyphicon glyphicon-pencil edit" id = "test" customer_data = <?= "'". json_encode($row) ."'" ?>  ></span></td>
+                  </tr>
+                  
+                <?php endforeach ?>
+                
+                
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>#</th>
+                  <th>Customer Name</th>
+                  <th>Phone Number</th>
+                  <th>Registration Date</th>
+                  <th>Address</th>
+                  <th>Edit</th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <!-- /.box-body -->
         </div>
 
 
 
-        <div class = 'col col-md-3'>
-         <div class="small-box bg-aqua animated slideInLeft">
-          <div class="inner">
-            <h3>
-
-             <?php  
-
-             $tabledata = get_all('stocks');
-             echo count($tabledata);
-
-             ?>
-
-           </h3>
-
-           <p>Total Customers</p>
-         </div>
-         <div class="icon">
-          <i class="glyphicon glyphicon-th"></i>
-        </div>
-        <a href="#" class="small-box-footer"> <i class="fa fa-arrow-circle-right"></i></a>
       </div>
 
-    </div>
-
-     <!-- data table col -->
-    <div class = 'col col-md-12'>
-    <div class="box with-border box-aqua">
-      <div class="box-header bg-aqua ">
-        <h3 class="box-title">Customers</h3>
-      </div>
-      <!-- /.box-header -->
-      <div class="box-body">
-        <table id="example2" class="table table-bordered table-striped">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Customer Name</th>
-              <th>Phone Number</th>
-              <th>Registration Date</th>
-              <th>Address</th>
-              <th>Edit</th>
-            </tr>
-          </thead>
-
-          <tbody>
-        <?php  $datatable = get_all('customers');  ?>
-        <?php foreach ($datatable  as $row ): ?>
-            <tr>
-              <td><?= $row['id']?></td>
-              <td><?=$row['customer_name']?></td>
-              <td><?=$row['customer_phone']?></td>
-              <td> <?=$row['date_created']?></td>
-              <td><?=$row['address']?></td>
-              <td ><span class=" btn btn-sm bg-green glyphicon glyphicon-pencil edit" id = "test" customer_data = <?= "'". json_encode($row) ."'" ?>  ></span></td>
-            </tr>
-            
-          <?php endforeach ?>
-            
-        
-          </tbody>
-          <tfoot>
-            <tr>
-              <th>#</th>
-              <th>Customer Name</th>
-              <th>Phone Number</th>
-              <th>Registration Date</th>
-              <th>Address</th>
-              <th>Edit</th>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-      <!-- /.box-body -->
+      <!-- datatable col end  -->
     </div>
 
 
 
+    <!-- /.box-body -->
   </div>
-
-  <!-- datatable col end  -->
-</div>
-
-
-
-<!-- /.box-body -->
-</div>
-<!-- /.box -->
+  <!-- /.box -->
 </div>
 </div>
 
@@ -368,18 +369,18 @@ function get_all($table){
       $("#example1").DataTable();
       $('#example2').DataTable({
         "fnRender":function(){
-           var sReturn = obj.aData[obj.DataColumn];
-           var returnButton = "<input class  type = 'submit'approveButton' value = 'click'> ";
-           return returnButton;
+         var sReturn = obj.aData[obj.DataColumn];
+         var returnButton = "<input class  type = 'submit'approveButton' value = 'click'> ";
+         return returnButton;
 
-        },
-        "paging": true,
-        "lengthChange": true,
-        "searching": true,
-        "ordering": true,
-        "info": true,
-        "autoWidth": true
-      });
+       },
+       "paging": true,
+       "lengthChange": true,
+       "searching": true,
+       "ordering": true,
+       "info": true,
+       "autoWidth": true
+     });
     });
 
 

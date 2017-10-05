@@ -1,7 +1,5 @@
 <?php
-$mysqli = new Mysqli('localhost', 'root','','nigeria');
 
-//data
 $theJson = json_decode('{
 	"customer_id": 11,
 	"sale_date" : "2017-09-12",
@@ -15,6 +13,42 @@ $theJson = json_decode('{
 	],
 	"amount_paid" : "9000"
 }') or $_POST['data'];
+
+
+
+
+//get sale id when invoice number is supplied
+function getSaleId($invoice_num,$mysqli){
+    $query = "SELECT id FROM sales WHERE invoice_number = $invoice_num";
+    if ($result = mysqli_query($mysqli,$query)){
+		return mysqli_fetch_assoc($result)['id'];
+	}else{
+		printf("Notice: %s", mysqli_error($mysqli));
+		return false;
+	}
+}
+
+
+function getOutStandingBalance($sale_id,$mysqli){
+  if ($sale = getSaleByID($sale_id,$mysqli)){
+  	$outstanding =  $sale['total'] - $sale['amount_paid'] ;
+    return $outstanding;
+  }
+}
+
+function getSaleByID($sale_id,$mysqli){
+
+	$query = "SELECT * FROM sales INNER JOIN customers ON
+	                    customers.id = sales.customer_id WHERE sales.id = $sale_id ";
+
+	if ($result = mysqli_query($mysqli,$query)){
+		return mysqli_fetch_assoc($result);
+	}else{
+		printf("Notice: %s", mysqli_error($mysqli));
+		return false;
+	}
+
+}
 
 
 
@@ -117,7 +151,7 @@ function storeSubsales($mysqli,$theJson){
 function getTotalFieldVal($arrayofarrays,$field){
 	$sum = 0;
 	foreach ($arrayofarrays as $array) {
-		$sum  = $sum  +  (int)$array[$field];
+		$sum  = $sum  +  $array[$field];
 	}
 	return $sum;
 }

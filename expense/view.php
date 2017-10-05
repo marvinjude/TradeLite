@@ -21,6 +21,7 @@
                for($i = 0; $i< mysqli_num_rows($result); $i++){
                 array_push($data, mysqli_fetch_assoc($result));
               }
+            }
               else{
 
                $_SESSION['no_expense_for_dates_selected'];
@@ -39,7 +40,7 @@
         }
 
 
-      }
+    
 
       function get_all($table){
        global $connection;
@@ -159,8 +160,8 @@
                     <div class = 'col col-md-12 col-xs-12'>
 
                      <form  method="POST" action = <?php echo $_SERVER['PHP_SELF']?> >
-                      <div class="box box-danger">
-                        <div class="box-header with-border">
+                      <div class="box box-primary">
+                        <div class="box-header with-border ">
                           <h3 class="box-title">Select The Start And  End Date </h3>
                         </div>
                         <div class="box-body">
@@ -195,11 +196,11 @@
 
               </div>
 
-
+               <br>
               <!-- data table col -->
               <div class = 'col col-md-12'>
-                <div class="box box-danger with-border ">
-                  <div class="box-header">
+                <div class="box box-primary  ">
+                  <div class="box-header with-border">
                     <h3 class="box-title">Customers</h3>
                   </div>
                   <!-- /.box-header -->

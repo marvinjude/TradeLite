@@ -1,9 +1,10 @@
 <?php// require_once('../const.php') or echo "unable to find file";?> -->
 
 
-<aside class="main-sidebar">
+<aside class="main-sidebar" >
   <!-- sidebar: style can be found in sidebar.less -->
   <section class="sidebar">
+     
     <!-- Sidebar user panel -->
     <div class="user-panel">
       <div class="pull-left image">
@@ -11,7 +12,7 @@
         <img src="../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
       </div>
       <div class="pull-left info">
-        <p>ALHAJI OWODE</p>
+        <p>MUKAZ NIG. LTD.</p>
         <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
       </div>
     </div>
@@ -62,8 +63,8 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="<?php echo '../customer/new.php'?>"><i class="glyphicon glyphicon-plus"></i> New Sale</a></li>
-            <li><a href="<?php echo '../customer/view.php'?>"><i class="fa fa-circle-o"></i>View/Edit Customers</a></li>
+            <li><a href="<?php echo '../sales/sell.php'?>"><i class="glyphicon glyphicon-plus"></i> New Sale</a></li>
+            <li><a href="<?php echo '../sales/reprint.php'?>"><i class="glyphicon glyphicon-print"></i>Reprint Invoice</a></li>
           </ul>
         </li>
 
@@ -76,8 +77,8 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="<?php echo '../customer/new.php'?>"><i class="glyphicon glyphicon-plus"></i> New </a></li>
-            <li><a href="<?php echo '../customer/view.php'?>"><i class="fa fa-circle-o"></i>View</a></li>
+            <li><a href="<?php echo '../expense/new.php'?>"><i class="glyphicon glyphicon-plus"></i> New </a></li>
+            <li><a href="<?php echo '../expense/view.php'?>"><i class="glyphicon glyphicon-eye-open"></i>View</a></li>
           </ul>
         </li>
 
@@ -90,8 +91,7 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="<?php echo '../customer/new.php'?>"><i class="glyphicon glyphicon-plus"></i> Daily Sales</a></li>
-            <li><a href="<?php echo '../customer/view.php'?>"><i class="fa fa-circle-o"></i>View/Edit Customers</a></li>
+            <li><a href="<?php echo '../enquiries/dailysales.php'?>"><i class="glyphicon glyphicon"></i> Daily Sales</a></li>
           </ul>
         </li>
 
@@ -104,8 +104,8 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="<?php echo '../customer/new.php'?>"><i class="glyphicon glyphicon-plus"></i> New Sale</a></li>
-            <li><a href="<?php echo '../customer/view.php'?>"><i class="fa fa-circle-o"></i>View/Edit Customers</a></li>
+            <li><a href="<?php echo '../bbf/new.php'?>"><i class="glyphicon glyphicon-plus"></i>Add new</a></li>
+            <li><a href="<?php echo '../bbf/view.php'?>"><i class="glyphicon glyphicon-eye-open"></i>View</a></li>
           </ul>
         </li>
 
