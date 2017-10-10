@@ -25,8 +25,8 @@
       if($count == 1)
       {
         $data = mysqli_fetch_assoc($result);
-        $_SESSION['user'] = serialize($_POST);
-        header("location:stock/new.php");   // this seems to be the mos uses  page 
+        $_SESSION['user'] = serialize($data);
+        header("location:sales/sell.php");   // this seems to be the mos uses  page 
       }   
       else
       {
@@ -44,7 +44,7 @@
     <head>
       <meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <title>AdminLTE 2 | General Form Elements</title>
+      <title>Mukaz | Login</title>
       <!-- Tell the browser to be responsive to screen width -->
       <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
       <!-- Bootstrap 3.3.6 -->
@@ -92,18 +92,19 @@ input {
     <!-- mini logo for sidebar mini 50x50 pixels -->
     <span class="logo-mini"><b>A</b>LT</span>
     <!-- logo for regular state and mobile devices -->
-    <span class="logo-lg"><b>Admin</b>LTE</span>
+    <span class="logo-lg"><b>MUKAZ NIG.</b>LTD.</span>
   </a>
   <!-- Header Navbar: style can be found in header.less -->
   <nav class="navbar navbar-static-top">
     <!-- Sidebar toggle button-->
-    <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+    
+   <!--  <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
       <span class="sr-only">Toggle navigation</span>
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </a>
-
+ -->
     <div class="navbar-custom-menu">
 
     </div>

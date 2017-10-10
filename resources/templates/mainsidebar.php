@@ -7,15 +7,16 @@
      
     <!-- Sidebar user panel -->
     <div class="user-panel">
-      <div class="pull-left image">
+      <!-- <div class="pull-left image">
 
-        <img src="../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+  
+        <span class =glyphicon glyphicon-font
       </div>
       <div class="pull-left info">
         <p>MUKAZ NIG. LTD.</p>
         <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
       </div>
-    </div>
+    </div> -->
     <!-- search form -->
 
     <!-- /.search form -->
@@ -82,6 +83,20 @@
           </ul>
         </li>
 
+        <li class="treeview">
+          <a>
+            <i class="glyphicon glyphicon-euro"></i>
+            <span>Bank Deposit</span>
+            <span class="pull-right-container">
+              <span class="label label-primary pull-right">2</span>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="<?php echo '../bankdeposit/new.php'?>"><i class="glyphicon glyphicon-plus"></i> New </a></li>
+            <li><a href="<?php echo '../bankdeposit/view.php'?>"><i class="glyphicon glyphicon-eye-open"></i>View</a></li>
+          </ul>
+        </li>
+
          <li class="treeview">
           <a href="#">
             <i class="glyphicon glyphicon-stats"></i>
@@ -92,6 +107,7 @@
           </a>
           <ul class="treeview-menu">
             <li><a href="<?php echo '../enquiries/dailysales.php'?>"><i class="glyphicon glyphicon"></i> Daily Sales</a></li>
+            <li><a href="<?php echo '../enquiries/debtors.php'?>"><i class="glyphicon glyphicon"></i>Deptors</a></li>
           </ul>
         </li>
 

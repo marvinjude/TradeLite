@@ -1,25 +1,27 @@
 <?php
+session_start();
 $connection = include('../resources/conection.inc.php');
-//session_start();
-//ob_start();
-//echo stockexist('10MM');
-if (isset($_POST['expense_submit'])){
-  $expense_description = trim(mysqli_real_escape_string($connection, htmlentities($_POST['expense_description'])));
-  $expense_amount = mysqli_real_escape_string($connection, htmlentities($_POST['expense_amount']));
-  $expense_date = mysqli_real_escape_string($connection, htmlentities($_POST['expense_date']));
 
-    $query = "INSERT INTO expenses(expense_description, expense_amount, expense_date) 
-    VALUES ('$expense_description' , '$expense_amount', '$expense_date')";
+if (isset($_POST['submit_deposits'])){
+  $depositor_name = trim(mysqli_real_escape_string($connection, htmlentities($_POST['depositor_name'])));
+  $bank_name = mysqli_real_escape_string($connection, htmlentities($_POST['bank_name']));
+  $amount_deposited = mysqli_real_escape_string($connection, htmlentities($_POST['amount_deposited']));
+  $date_deposited = mysqli_real_escape_string($connection, htmlentities($_POST['date_deposited']));
+
+  $query = "INSERT INTO bank_deposits(depositor_name, bank_name, amount_deposited,date_deposited) 
+  VALUES ('$depositor_name' , '$bank_name', '$amount_deposited','$date_deposited')";
 
     //echo $querY
-    $result = mysqli_query($connection, $query);
-    if($result){
-      echo "recored created";
-    }else{
-      echo "not created ".mysqli_error($connection);
-    }
+  $result = mysqli_query($connection, $query);
+  if($result){
+    $_SESSION['create_bank_success'] = "success";
+  }else{
+      //echo "not created ".mysqli_error($connection);
+    $_SESSION['create_bank_error'] = 'error';
+  }
 }
-    
+
+
 ?>
 
 
@@ -66,7 +68,6 @@ if (isset($_POST['expense_submit'])){
     input{
      text-transform: uppercase;
    }
-   input,select{text-transform: uppercase;}
  </style>
 
 </head>
@@ -90,13 +91,13 @@ if (isset($_POST['expense_submit'])){
       <div class="content-wrapper">
         <section class="content-header">
           <h1>
-            Create Expense
+            Create Bank Deposits
           </h1>
           <hr>         
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li><a href="#">Post Expense</a></li>
-            <li class="active">View Expense</li>
+            <li><a href="#"></a></li>
+            <li class="active"></li>
           </ol>
         </section>
         
@@ -109,49 +110,56 @@ if (isset($_POST['expense_submit'])){
 
                <div class="box box-default">
                 <div class="box-header with-border">
-                  <h3 class="box-title"> Create New Expense</h3>
+                  <h3 class="box-title"> Create Bank Deposits</h3>
 
                   <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                    <button type="button"  name = 'newstock' class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
+                    <button type="button"  name = 'submit_deposits' class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
                   </div>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
                   <div class="row">
-                  <div class="col-md-12">
-                  
-                    <form method="POST" action = "<?php echo $_SERVER['PHP_SELF'];?>">
-                      <div class="form-group">
+                    <div class="col-md-12">
 
+                      <form method="POST" action = "<?php echo $_SERVER['PHP_SELF'];?>">
                         <div class="form-group">
-                          <label>New Expense</label>
-                          <input type="text" name = 'expense_description' class="form-control" placeholder="Enter new expense name" required>
-                        </div>
 
-                        <!-- /.form-group -->
-                        <div class="form-group">
-                          <label>Amount</label>
-                          <input name = 'expense_amount' type="number" class="form-control" placeholder="Enter The Amount" required>
-                        </div>
+                          <div class="form-group">
+                            <label>Depositors Name</label>
+                            <input type="text" name = 'depositor_name' class="form-control" placeholder="Enter depositors name" required>
+                          </div>
 
-                        <!--date created-->
+                          <!-- /.form-group -->
+                          <div class="form-group">
+                            <label>Bank Name</label>
+                            <input name = 'bank_name' type="text" class="form-control" placeholder="Enter The bank name" required>
+                          </div>
 
-                        <div class="form-group">
-                          <label>Date Created</label>
-                          <input name = 'expense_date' type="date" class="form-control" placeholder="Enter created date" required>
-                        </div>
-                        <!-- /.form-group -->
-                        <input type="submit" name = 'expense_submit' class="btn btn-primary pull-right" value = "Save expense">
-                      </form>
+                          <div class="form-group">
+                            <label>Amount Deposited</label>
+                            <input name = 'amount_deposited' type="number" class="form-control" placeholder="Enter The Amount deposited" required>
+                          </div>
+
+
+                          <!--date created-->
+                          <div class="form-group">
+                            <label>Date Deposited</label>
+                            <input name = 'date_deposited' type="date" class="form-control" placeholder="Enter date deposited" required>
+                          </div>
+                          <!-- /.form-group -->
+                          <input type="submit" name = 'submit_deposits' class="btn btn-primary pull-right" value = "save"></button>
+                          </div>
+                        </form>
+                      </div>
+                      <!-- /.col -->
+
+                      <!-- /.col -->
                     </div>
-                    <!-- /.col -->
-
-                    <!-- /.col -->
+                    <!-- /.row -->
                   </div>
-                  <!-- /.row -->
-                </div>
-                <!-- /.box-body -->
+                  </div>
+                  <!-- /.box-body -->
           <!-- <div class="box-footer">
             Visit <a href="https://select2.github.io/">Select2 documentation</a> for more examples and information about
             the plugin.
@@ -166,8 +174,6 @@ if (isset($_POST['expense_submit'])){
 </div>
 
 
-
-
 <script src="../js/jquery-2.2.3.min.js"></script>
 <!-- Bootstrap 3.3.6 -->
 <script src="../js/bootstrap.min.js"></script>
@@ -177,5 +183,6 @@ if (isset($_POST['expense_submit'])){
 <script src="../dist/js/app.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../dist/js/demo.js"></script> 
+
 </body>
 </html>

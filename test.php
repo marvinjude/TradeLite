@@ -1,28 +1,26 @@
-//sql query for the sale part of the table
+<?php
 
-SELECT sales.sale_date,customers.customer_name,sales.invoice_number,stocks.description,stocks.cost_per_ton,subsales.quantity,subsales.subtotal FROM sales INNER JOIN customers ON customers.id = sales.customer_id INNER JOIN subsales on sales.id = subsales.sale_id INNER JOIN stocks ON stocks.id = subsales.stock_id WHERE sales.sale_date BETWEEN 
-'2017-09-12' AND '2017-09-12' ORDER BY sales.invoice_number DESC
-
-//sales total for those days 
-SELECT SUM(sales.total) FROM sales WHERE sales.sale_date BETWEEN '2017-09-12' AND '2017-09-12'
+echo get2Dec('45643.877676');
 
 
-//total of balance brought foward
+function get2Dec($string){
+ $vals = explode('.', $string);
+ $vals = $vals[0]. "." .substr($vals[1], 0, 2);
+ return (float) $vals;
+}
+?>
 
-SELECT SUM(balance_brought_foward.amount) from balance_brought_foward where balance_brought_foward.date BETWEEN '2017-09-12' AND '2017-09-12'
+use this tbody for the deptors
 
+<?php  $datatable = get_all('customers');  ?>
+                    <?php foreach ($datatable  as $row ): ?>
+                      <tr>
+                        <td><?= $row['id']?></td>
+                        <td><?=$row['customer_name']?></td>
+                        <td><?=$row['customer_phone']?></td>
+                        <td> <?=Dformat($row['date_created'])?></td>
+                        <td><?=$row['address']?></td>
+                        <td ><span class=" btn btn-sm bg-green glyphicon glyphicon-pencil edit" id = "test" customer_data = <?= "'". json_encode($row) ."'" ?>  ></span></td>
+                      </tr>
 
-//total bank deposits
-SELECT SUM(bank_deposits.amount) from bank_deposits where bank_deposits.date BETWEEN '2017-09-12' AND '2017-09-12'
-
-
-//total customer deposits
-SELECT SUM(customer_deposits.amount) from customer_deposit where customer_deposit.date BETWEEN '2017-09-12' AND '2017-09-12'
-
-//sum of expenses
-SELECT SUM(expenses.amount) from expenses where expenses.date BETWEEN '2017-09-12' AND '2017-09-12'
-
-//get total qty sold for each stocks 
-
-SELECT stocks.description, SUM(subsales.quantity) FROM subsales INNER JOIN stocks ON stocks.id = subsales.stock_id GROUP BY subsales.stock_id
-
+                    <?php endforeach ?>

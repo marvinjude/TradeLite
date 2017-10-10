@@ -5,18 +5,19 @@ $connection = include('../resources/conection.inc.php');
 
 if (isset($_POST['update_customer'])){
   $id = trim($_POST['id']);
-  $id = trim($_POST['id']);
-  $id = trim($_POST['id']);
-  $id = trim($_POST['id']);
-  echo $id;
+  $name   = $_POST['name'];
+  $phone = $_POST['phone'];
+  $address = $_POST['address'];
+  update_customer($connection,$name,$phone,$address,$id);
 }
 
+function Dformat($date_str){
+ return date("d/m/Y",strtotime($date_str));
+}
 
-function update(){
-  global $connection;
-
-  $query = "UPDATE  customers SET $field = $newvalue WHERE 
-  $selection_condition->field ='$selection_condition->value'  ";
+function update_customer($connection,$name,$phone,$address, $customer_id){
+  $query = "UPDATE  customers SET customer_name = '$name', customer_phone = '$phone' , address = '$address'
+  WHERE id = '$customer_id' ";
   if (mysqli_query($connection,$query)){
     return true;
   }else{
@@ -96,6 +97,8 @@ function get_all($table){
  cursor: pointer;
  padding:10px;
 }
+
+input,select{text-transform: uppercase;}
 </style>
 
 </head>
@@ -118,7 +121,7 @@ function get_all($table){
       <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
 
-       
+
         <!-- start modal- modal for edit product/stock -->
         <div class="example-modal">
           <div class="modal animated pulse" >
@@ -137,23 +140,23 @@ function get_all($table){
                       <div class="box-body">
                         <div class="form-group">
                           <label for="exampleInputEmail1">Name</label>
-                          <input type="text" class="form-control" id ="customer_name"  
+                          <input type="text" class="form-control" id ="customer_name" name="name"  
                           >
                         </div>
 
                         <div class="form-group">
                           <label for="exampleInputPassword1">Phone</label>
-                          <input type="number" class="form-control" id = "customer_phone">
+                          <input type="number" class="form-control" id = "customer_phone" name='phone'>
                         </div>
 
                         <div class="form-group">
                           <label for="exampleInputEmail1">Address</label>
-                          <textarea type="text" class="form-control" id="customer_address" ></textarea>
+                          <textarea type="text" class="form-control" id="customer_address" name = 'address'  ></textarea>
                         </div>
 
                         <div class="form-group">
                           <label for="exampleInputEmail1"> Registration Date</label>
-                          <input type="date" class="form-control" id="customer_datecreated"  >
+                          <input type="date" class="form-control" id="customer_datecreated"  disabled>
                         </div>
 
                         <div class="modal-footer">
@@ -185,7 +188,7 @@ function get_all($table){
 
           <section class="content-header">
             <h1>
-              View Stocks
+              View Customers
             </h1>       
             <ol class="breadcrumb">
               <li><a href="#"><i class="glyphicon glyphicon-search"></i> Home</a></li>
@@ -200,193 +203,171 @@ function get_all($table){
 
 
 
+
+
+
+
               <div class = 'col col-md-3'>
-               <div class="small-box bg-green animated slideInLeft">
+               <div class="small-box bg-aqua animated slideInLeft">
                 <div class="inner">
                   <h3>
 
                    <?php  
 
-                   $tabledata = get_all('stocks');
+                   $tabledata = get_all('customers');
                    echo count($tabledata);
 
                    ?>
 
                  </h3>
 
-                 <p>Top Buyer</p>
+                 <p>Total Customers</p>
                </div>
                <div class="icon">
-                <i class="glyphicon glyphicon-star"></i>
+                <i class="glyphicon glyphicon-th"></i>
               </div>
-              <a href="#" class="small-box-footer"> <i class="glyphicon glyphicon-calendar"></i></a>
+              <a href="#" class="small-box-footer"> <i class="fa fa-arrow-circle-right"></i></a>
             </div>
 
           </div>
 
+          <!-- data table col -->
+          <div class = 'col col-md-12'>
+            <div class="box with-border box-aqua">
+              <div class="box-header bg-aqua ">
+                <h3 class="box-title">Customers</h3>
+              </div>
+              <!-- /.box-header -->
+              <div class="box-body">
+                <table id="example2" class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Customer Name</th>
+                      <th>Phone Number</th>
+                      <th>Registration Date</th>
+                      <th>Address</th>
+                      <th>Edit</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <?php  $datatable = get_all('customers');  ?>
+                    <?php foreach ($datatable  as $row ): ?>
+                      <tr>
+                        <td><?= $row['id']?></td>
+                        <td><?=$row['customer_name']?></td>
+                        <td><?=$row['customer_phone']?></td>
+                        <td> <?=Dformat($row['date_created'])?></td>
+                        <td><?=$row['address']?></td>
+                        <td ><span class=" btn btn-sm bg-green glyphicon glyphicon-pencil edit" id = "test" customer_data = <?= "'". json_encode($row) ."'" ?>  ></span></td>
+                      </tr>
+
+                    <?php endforeach ?>
 
 
-          <div class = 'col col-md-3'>
-           <div class="small-box bg-aqua animated slideInLeft">
-            <div class="inner">
-              <h3>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <th>#</th>
+                      <th>Customer Name</th>
+                      <th>Phone Number</th>
+                      <th>Registration Date</th>
+                      <th>Address</th>
+                      <th>Edit</th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <!-- /.box-body -->
+            </div>
 
-               <?php  
 
-               $tabledata = get_all('stocks');
-               echo count($tabledata);
 
-               ?>
-
-             </h3>
-
-             <p>Total Customers</p>
-           </div>
-           <div class="icon">
-            <i class="glyphicon glyphicon-th"></i>
           </div>
-          <a href="#" class="small-box-footer"> <i class="fa fa-arrow-circle-right"></i></a>
-        </div>
 
-      </div>
-
-      <!-- data table col -->
-      <div class = 'col col-md-12'>
-        <div class="box with-border box-aqua">
-          <div class="box-header bg-aqua ">
-            <h3 class="box-title">Customers</h3>
-          </div>
-          <!-- /.box-header -->
-          <div class="box-body">
-            <table id="example2" class="table table-bordered table-striped">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Customer Name</th>
-                  <th>Phone Number</th>
-                  <th>Registration Date</th>
-                  <th>Address</th>
-                  <th>Edit</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <?php  $datatable = get_all('customers');  ?>
-                <?php foreach ($datatable  as $row ): ?>
-                  <tr>
-                    <td><?= $row['id']?></td>
-                    <td><?=$row['customer_name']?></td>
-                    <td><?=$row['customer_phone']?></td>
-                    <td> <?=$row['date_created']?></td>
-                    <td><?=$row['address']?></td>
-                    <td ><span class=" btn btn-sm bg-green glyphicon glyphicon-pencil edit" id = "test" customer_data = <?= "'". json_encode($row) ."'" ?>  ></span></td>
-                  </tr>
-                  
-                <?php endforeach ?>
-                
-                
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>#</th>
-                  <th>Customer Name</th>
-                  <th>Phone Number</th>
-                  <th>Registration Date</th>
-                  <th>Address</th>
-                  <th>Edit</th>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-          <!-- /.box-body -->
+          <!-- datatable col end  -->
         </div>
 
 
 
+        <!-- /.box-body -->
       </div>
-
-      <!-- datatable col end  -->
+      <!-- /.box -->
     </div>
-
-
-
-    <!-- /.box-body -->
   </div>
-  <!-- /.box -->
-</div>
-</div>
 
 
 
 
 
 
-<script src="../js/jquery-2.2.3.min.js"></script>
-<!-- Bootstrap 3.3.6 -->
-<script src="../js/bootstrap.min.js"></script>
+  <script src="../js/jquery-2.2.3.min.js"></script>
+  <!-- Bootstrap 3.3.6 -->
+  <script src="../js/bootstrap.min.js"></script>
 
-<script src="../plugins/datatables/jquery.dataTables.min.js"></script>
+  <script src="../plugins/datatables/jquery.dataTables.min.js"></script>
 
-<script src="../plugins/datatables/dataTables.bootstrap.min.js"></script>
-<!-- FastClick -->
-<script src="../js/fastclick.min.js"></script>
-<!-- AdminLTE App -->
-<script src="../dist/js/app.min.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="../dist/js/demo.js"></script> 
-<script type="text/javascript">
-  $('document').ready(function(){
+  <script src="../plugins/datatables/dataTables.bootstrap.min.js"></script>
+  <!-- FastClick -->
+  <script src="../js/fastclick.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="../dist/js/app.min.js"></script>
+  <!-- AdminLTE for demo purposes -->
+  <script src="../dist/js/demo.js"></script> 
+  <script type="text/javascript">
+    $('document').ready(function(){
 
 
-   
-    $('.edit').on('click', function(event){
-      var button =  event.target;
-      var customer = button.getAttribute('customer_data');
-      var customer = JSON.parse(customer);
-      console.log(customer);
 
-      $('#customer_name').val(customer.customer_name);
-      $('#customer_datecreated').val(customer.date_created);
-      $('#customer_address').val(customer.address);
-      $('#customer_phone').val(customer.customer_phone);
-      $('#id').val(customer.id);
+      $('.edit').on('click', function(event){
+        var button =  event.target;
+        var customer = button.getAttribute('customer_data');
+        var customer = JSON.parse(customer);
+        console.log(customer);
 
-      $('.modal').modal();
+        $('#customer_name').val(customer.customer_name);
+        $('#customer_datecreated').val(customer.date_created);
+        $('#customer_address').val(customer.address);
+        $('#customer_phone').val(customer.customer_phone);
+        $('#id').val(customer.id);
+
+        $('.modal').modal();
+      });
+
+
+
+      $('#cost_per_ton').on('click',function(){
+        $('.modal').hide();
+      });
+
+      $('#editstock').on('click',function(){
+        $('.modal').modal();
+      });
+
+
+      $(function () {
+        $("#example1").DataTable();
+        $('#example2').DataTable({
+          "fnRender":function(){
+           var sReturn = obj.aData[obj.DataColumn];
+           var returnButton = "<input class  type = 'submit'approveButton' value = 'click'> ";
+           return returnButton;
+
+         },
+         "paging": true,
+         "lengthChange": true,
+         "searching": true,
+         "ordering": true,
+         "info": true,
+         "autoWidth": true
+       });
+      });
+
+
     });
 
-
-
-    $('#cost_per_ton').on('click',function(){
-      $('.modal').hide();
-    });
-
-    $('#editstock').on('click',function(){
-      $('.modal').modal();
-    });
-
-
-    $(function () {
-      $("#example1").DataTable();
-      $('#example2').DataTable({
-        "fnRender":function(){
-         var sReturn = obj.aData[obj.DataColumn];
-         var returnButton = "<input class  type = 'submit'approveButton' value = 'click'> ";
-         return returnButton;
-
-       },
-       "paging": true,
-       "lengthChange": true,
-       "searching": true,
-       "ordering": true,
-       "info": true,
-       "autoWidth": true
-     });
-    });
-
-
-  });
-  
-</script>
+  </script>
 
 </script>
 </body>

@@ -9,7 +9,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
   $sale_id = mysqli_real_escape_string($connection,$_GET['id']);
   $invoice_data = getPreparedInvoiceData($sale_id,$connection);
 
+
+
+    // var_dump(getSaleByID('150',$mysqli)) ;
   $sale = getSaleByID($sale_id,$connection);
+
+  // var_dump($invoice_data);
   
 }
 
@@ -23,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 2 | Invoice</title>
+  <title>Mukaz | Invoice</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
@@ -61,10 +66,11 @@ img{
 
 .invoice-details{
   margin-bottom: 20px;
-  border:1px solid whitesmoke;
+  /*border:1px solid whitesmoke;*/
   padding:10px ;
   font-family:pacifico;
   color:grey;
+  font-size: 20px;
 }
 
 </style>
@@ -87,24 +93,16 @@ img{
             <!-- <other invoice details> -->
               <div class="row invoice-details" >
                 <div class="col-md-4 col-sm-4 col-xs-4 centered">
-                  <h3 class = 'inline'>Invoice Number:</h3>
-                  <h3 class='inline'>
-                    <?php echo $sale['invoice_number']?>
-                  </h3>
+                    <?php echo "Invoice Number: " .$sale['invoice_number']?>
                 </div>
 
                 <div class="col-md-4 col-sm-4 col-xs-4 centered" >
-                  <h3 class = 'inline'>Date:</h3> 
-                  <h3 class='inline align-right'>
-                    <?php echo $sale['sale_date']?>
+                    <?php echo "Date: ". date('d-m-Y',strtotime($sale['sale_date']))?>
                   </h3>
                 </div>
 
                 <div class="col-md-4 col-sm-4  centered">
-                  <h3 class = 'inline '>Customer Name:</h3> 
-                  <h3 class='inline'>
-                  <?php echo $sale['customer_name']?>
-                  </h3>
+                  <?php echo "Customer: ". $sale['customer_name']?>
                 </div>
                 <!-- /.col -->
               </div>
@@ -113,7 +111,7 @@ img{
               <!-- Table row -->
               <div class="row">
                 <div class="col-xs-12 table-responsive">
-                  <table class="table table-striped">
+                  <table class="table table-striped table-bordered">
                     <thead>
                       <tr>
                         <th>S/N</th>
@@ -135,7 +133,7 @@ img{
                           <td><?=$row["price_per_ton"]?></td> 
                           <td><?=$row["quantity"]?></td>
                           <td><?=$row["rate"]?></td>
-                          <td><?=$row["total"]?></td>
+                          <td><?=$row["subtotal"]?></td>
 
                         </tr>
 
@@ -172,7 +170,7 @@ img{
                     <table class="table table-bordered table-striped">
                      <tr>
                       <th style="width:50%">Total</th>
-                      <td><?php echo  ceil(getTotalFieldVal($invoice_data,'total'))?></td>
+                      <td><?php echo  $sale['total']?></td>
                     </tr>
                     <tr>
                       <th>Amount Paid </th>

@@ -1,3 +1,44 @@
+1. on page load 
+  set date field to today
+  set Invoice number 
+
+2.on customer field loose focus
+  send an ajax request to the server where data = the customer 
+
+3.store invoice number in session onpageload
+on invoice number  field loose focus||enter clicked store the new invoice number
+
+4.store todays date as the sale_date on the session
+  on date field loose focus||enter clicked store the new date on server 
+
+5. make addstock fields required
+   on add stock click: 
+   remove eventlistener, show loader ,on-succefull, add eventlistener
+   send an ajax request with data as (stock,qty)
+
+   onserver:
+   check if the states quantity is available
+     if available{
+         return (stocksname,qty,subtotal, position_in_session_arr and an href link to unset the session)
+     }else{
+        return toast error message
+     }
+6.on proceed click crete json from session data pass is the the approprite functions
+7. load the invoice 
+
+///god help me
+
+
+
+
+
+
+
+
+
+
+
+
 ______________TO_FIX________________
 Files                 Status
 ________________|_____________________

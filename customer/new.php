@@ -100,6 +100,8 @@ function phone_exist($phone){
   		cursor: pointer;
   		padding:10px;
   	}
+
+  	input,select{text-transform: uppercase;}
   </style>
 
 </head>

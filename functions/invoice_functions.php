@@ -1,26 +1,41 @@
 <?php
 
-$theJson = json_decode('{
-	"customer_id": 11,
-	"sale_date" : "2017-09-12",
-	"invoice_number": 60002,
-	"seller_id": 1,
-	"total": 10,
-	"sales":[
-		{"stock_id": "1", "quantity": "5000" ,"subtotal": "9087"},
-		{"stock_id": "2" , "quantity": "5000" , "subtotal": "789"},
-		{"stock_id": "3" , "quantity": "5000" ,"subtotal" :"67890"}
-	],
-	"amount_paid" : "9000"
-}') or $_POST['data'];
+
+//expctecd json data
+// $theJson = json_decode('{
+// 	"customer_id": 11,
+// 	"sale_date" : "2017-09-12",
+// 	"invoice_number": 60002,
+// 	"seller_id": 1,
+// 	"total": 10,
+// 	"sales":[
+// 		{"stock_id": "1", "quantity": "5000" ,"subtotal": "9087"},
+// 		{"stock_id": "2" , "quantity": "5000" , "subtotal": "789"},
+// 		{"stock_id": "3" , "quantity": "5000" ,"subtotal" :"67890"}
+// 	],
+//     "amount_paid" : "9000"
+// }') or $_POST['data'];
+
+
+// $JSON_FROM_CLIENT = json_decode('{
+// 	"customer_id": 11,
+// 	"sale_date" : "2017-09-12",
+// 	"invoice_number": 60002,
+// 	"sales":[
+// 		{"stock_id": "1", "quantity": "5000" ,"subtotal": "9087"},
+// 		{"stock_id": "2" , "quantity": "5000" , "subtotal": "789"},
+// 		{"stock_id": "3" , "quantity": "5000" ,"subtotal" :"67890"}
+// 	],
+// 	......"amount_paid" : "9000"
+// }');
 
 
 
 
 //get sale id when invoice number is supplied
 function getSaleId($invoice_num,$mysqli){
-    $query = "SELECT id FROM sales WHERE invoice_number = $invoice_num";
-    if ($result = mysqli_query($mysqli,$query)){
+	$query = "SELECT id FROM sales WHERE invoice_number = $invoice_num";
+	if ($result = mysqli_query($mysqli,$query)){
 		return mysqli_fetch_assoc($result)['id'];
 	}else{
 		printf("Notice: %s", mysqli_error($mysqli));
@@ -30,16 +45,16 @@ function getSaleId($invoice_num,$mysqli){
 
 
 function getOutStandingBalance($sale_id,$mysqli){
-  if ($sale = getSaleByID($sale_id,$mysqli)){
-  	$outstanding =  $sale['total'] - $sale['amount_paid'] ;
-    return $outstanding;
-  }
+	if ($sale = getSaleByID($sale_id,$mysqli)){
+		$outstanding =  $sale['total'] - $sale['amount_paid'] ;
+		return $outstanding;
+	}
 }
 
 function getSaleByID($sale_id,$mysqli){
 
 	$query = "SELECT * FROM sales INNER JOIN customers ON
-	                    customers.id = sales.customer_id WHERE sales.id = $sale_id ";
+	customers.id = sales.customer_id WHERE sales.id = '$sale_id' ";
 
 	if ($result = mysqli_query($mysqli,$query)){
 		return mysqli_fetch_assoc($result);
@@ -66,7 +81,6 @@ function reduceStockLevel($connection,$data){
 		setStockQuantity($this_stock_id,$new_quantity,$connection);
 	}
 }
-
 
 
 
@@ -102,14 +116,15 @@ function checkStocksAvailability($data,$connection){
 }
 
 
-
 function createNewSale($mysqli,$theJson){
-	$query = "INSERT INTO sales (id, customer_id, seller_id, sale_date, invoice_number, amount_paid)
-	VALUES (NULL, '$theJson->customer_id', '$theJson->seller_id', '$theJson->sale_date', '$theJson->invoice_number', '$theJson->amount_paid')";
-	if($mysqli->query($query)){
 
+	$query = "INSERT INTO sales (id, customer_id, sale_date, invoice_number, total, amount_paid)
+	VALUES (NULL, '$theJson->customer_id','$theJson->sale_date', '$theJson->invoice_number',
+	'$theJson->total','$theJson->amount_paid')";
+	
+	if($mysqli->query($query)){
 		//store sale_id in session last_sale_id
-		storeSaleID($mysqli);
+	   $_SESSION['last_sale_id'] = $mysqli->insert_id;
 		return true;
 	}else{
 		echo mysqli_error($mysqli);
@@ -118,14 +133,13 @@ function createNewSale($mysqli,$theJson){
 }
 
 
-
 function storeSubsales($mysqli,$theJson){
-	if (!$stmt = $mysqli->prepare("INSERT INTO subsales (stock_id, quantity, subtotal,sale_id) VALUES (?, ?, ?,?)")){
+	if (!$stmt = $mysqli->prepare("INSERT INTO subsales (stock_id, quantity, subtotal,selling_price,sale_id) VALUES (?,?,?,?,?)")){
 		echo 'unable to prepare statement';
 	}
 
 
-	$stmt->bind_param("dddd", $stock_id, $stock_quantity, $total, $sale_id);
+	$stmt->bind_param("ddddd", $stock_id, $stock_quantity, $total,$selling_price ,$sale_id);
 
         //get the last sale id stored into session
 	$last_id = $_SESSION['last_sale_id'];
@@ -133,6 +147,7 @@ function storeSubsales($mysqli,$theJson){
 		$stock_id = $sale->stock_id;
 		$stock_quantity = $sale->quantity ;
 		$total = $sale->subtotal;
+		$selling_price =  getRate($total,$stock_quantity);
 		$sale_id = $last_id;
 		$stmt->execute();
 	}
@@ -143,7 +158,6 @@ function storeSubsales($mysqli,$theJson){
 	}
 	$stmt->close();
 }
-
 
 
 //sums up a given field name in an array of arrays e.g sums all subtotals in an array of subsales and return total
@@ -164,10 +178,10 @@ function getPreparedInvoiceData($sale_id,$mysqli){
     while ($row = mysqli_fetch_assoc($result)) {
     	$invoice_row = array(
     		"S_N" => ++$i,
-    		"quantity" => (int)$row['quantity'],
+    		"quantity" => $row['quantity'],
     		"price_per_ton" => $row['cost_per_ton'],
-    		"rate" => getRate(getTotal($row['cost_per_ton'],45,$row['quantity']),$row['quantity']),
-    		"total"  => getTotal($row['cost_per_ton'],45,$row['quantity']),
+    		"rate" => $row['subtotal'] / $row['quantity'],
+    		"subtotal"  => $row['subtotal'],
     		"description" => $row['description']
     	);
    	array_push($invoice_data,$invoice_row);  //push result row to array
@@ -182,7 +196,7 @@ function getPreparedInvoiceData($sale_id,$mysqli){
 //genetated the data that needs to be rendered on the invoice for the last saleID
 //gets :description,price per ton,quantity
 function getStocksPurchases($mysqli,$sale_id){
-	$query = "SELECT stocks.description,stocks.cost_per_ton,subsales.quantity FROM sales INNER join subsales ON sales.id = subsales.sale_id INNER JOIN stocks ON stocks.id = subsales.stock_id WHERE sales.id = '$sale_id'";
+	$query = "SELECT stocks.description,stocks.cost_per_ton,subsales.quantity,subsales.subtotal FROM sales INNER join subsales ON sales.id = subsales.sale_id INNER JOIN stocks ON stocks.id = subsales.stock_id WHERE sales.id = '$sale_id'";
 
 	if($result = mysqli_query($mysqli,$query)){
 		return $result ;
@@ -234,11 +248,10 @@ function getCostPerTon($stock_id,$mysqli){
 }
 
 //store (in_session)and returns the last inserted id ... should be called after sales insertion
-function storeSaleID($mysqli){
-	$id = $mysqli->insert_id;
-	$_SESSION['last_sale_id'] = $id;
-	return $id;
-}
+// function storeSaleID($mysqli){
+// 	$id = $mysqli->insert_id;
+// 	$_SESSION['last_sale_id'] = $id;
+// }
 
     // formulae (total sales) = (price per ton/ quantity per ton) * quantity sold  
 
@@ -246,7 +259,7 @@ function storeSaleID($mysqli){
 
 // get total for each subsale using the above formula
 function getTotal($price_per_ton,$quantity_per_ton,$quantity_sold){
-	return ($price_per_ton / $quantity_per_ton) * ($quantity_sold);
+	return ($price_per_ton / $quantity_per_ton) * $quantity_sold;
 }
 
 function getRate($total,$quantity_sold){
@@ -292,3 +305,12 @@ function genNewInvoiceNumber($mysqli){
 }
 
 
+function get2Dec($string){
+ $vals = explode('.', $string);
+ $vals = $vals[0]. "." .substr($vals[1], 0, 2);
+ return (float) $vals;
+}
+
+
+
+?>
