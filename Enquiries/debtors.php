@@ -95,15 +95,15 @@ input,select{text-transform: uppercase;}
                     <h4 class="modal-title">Edit Customer Record</h4>
                   </div>
                   <div class="modal-body">
-
                     <!-- modal body -->
-
-                    <form role="form"  method="POST" action = <?php echo $_SERVER['PHP_SELF']?> >
+                    <form role="form"  method="POST" action = "../sales/incr_amount_paid.php"?> 
                       <div class="box-body">
                         <div class="form-group">
                           <label for="exampleInputEmail1"> Enter Amount Paid</label>
-                          <input type="number" class="form-control" id="customer_datecreated" placeholder="Amount" >
+                          <input type="number" class="form-control" name ='amount' placeholder="Amount" >
                         </div>
+
+                        <input type="number" id="new-amount" name ='sale' hidden>
 
                         <div class="modal-footer">
                           <input  type="submit" class="btn btn-primary" value = "Save changes" 
@@ -239,7 +239,7 @@ input,select{text-transform: uppercase;}
                        cus_name = '<?php echo $deptor['customer_name'] ?>' >Paid 
                        <span class = 'glyphicon glyphicon-ok'></span>
                      </button>
-                     <button class = 'btn bg-orange enter_amt_paid'>Add
+                     <button class = 'btn bg-orange enter_amt_paid' sale_id = '<?php echo $deptor['id'] ?>'>Add
                        <span class = 'glyphicon glyphicon-plus'></span>
                      </button>
                    </div>
@@ -306,6 +306,8 @@ input,select{text-transform: uppercase;}
     
     $('.enter_amt_paid').click(function(){
           $('.modal').modal();
+          var sale_id = $(this).attr('sale_id');
+          $('#new-amount').val(sale_id);
     });
 
 

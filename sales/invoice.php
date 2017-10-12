@@ -59,6 +59,9 @@ img{
 .inline{
   display: inline;
 }
+td{
+  text-transform: uppercase;
+}
 
 .centered{
   text-align: center;
@@ -130,10 +133,10 @@ img{
                         <tr>
                           <td><?=$row["S_N"]?></td>
                           <td><?=$row["description"]?></td>
-                          <td><?=$row["price_per_ton"]?></td> 
+                          <td><?=number_format($row["price_per_ton"])?></td> 
                           <td><?=$row["quantity"]?></td>
-                          <td><?=$row["rate"]?></td>
-                          <td><?=$row["subtotal"]?></td>
+                          <td><?=number_format($row["rate"])?></td>
+                          <td><?=number_format($row["subtotal"])?></td>
 
                         </tr>
 
@@ -170,11 +173,11 @@ img{
                     <table class="table table-bordered table-striped">
                      <tr>
                       <th style="width:50%">Total</th>
-                      <td><?php echo  $sale['total']?></td>
+                      <td><?php echo  number_format($sale['total'])?></td>
                     </tr>
                     <tr>
                       <th>Amount Paid </th>
-                      <td><?php echo  $sale['amount_paid'] ?></td>
+                      <td><?php echo  number_format($sale['amount_paid']) ?></td>
                     </tr>
                     <tr>
                       <th>Outstanding</th>

@@ -180,7 +180,7 @@ function getPreparedInvoiceData($sale_id,$mysqli){
     		"S_N" => ++$i,
     		"quantity" => $row['quantity'],
     		"price_per_ton" => $row['cost_per_ton'],
-    		"rate" => $row['subtotal'] / $row['quantity'],
+    		"rate" => round(($row['subtotal'] / $row['quantity']),2),
     		"subtotal"  => $row['subtotal'],
     		"description" => $row['description']
     	);
