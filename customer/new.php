@@ -1,5 +1,9 @@
-<?php
-session_start();
+<?php session_start();
+
+if(!isset($_SESSION['user'])){
+  header("Location: ../");
+}
+
 $connection = include('../resources/conection.inc.php');
 if (isset($_POST['new_customer'])){
 	$customer_name = trim(mysqli_real_escape_string($connection, htmlentities($_POST['customer_name'])));
@@ -9,8 +13,8 @@ if (isset($_POST['new_customer'])){
 
 	if(!phone_exist($customer_phone)){
 //$_SESSION['invalid_phone'] = 'error';
-		$query = "INSERT INTO customers (customer_name, customer_phone, date_created ) 
-		VALUES ('$customer_name', '$customer_phone' , '$date_created')";
+		$query = "INSERT INTO customers (customer_name, customer_phone, address, date_created ) 
+		VALUES ('$customer_name', '$customer_phone' ,'$customer_address', '$date_created')";
 
 
 		if (mysqli_query($connection, $query)) {
@@ -58,7 +62,7 @@ function phone_exist($phone){
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>AdminLTE 2 | General Form Elements</title>
+	<title>MUKAZ | New Customer</title>
 	<!-- Tell the browser to be responsive to screen width -->
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 	<!-- Bootstrap 3.3.6 -->
@@ -206,7 +210,7 @@ function phone_exist($phone){
 											<div class="form-group">
 												<label> Phone</label>
 												<input name = 'customer_phone' type="number" class="form-control" placeholder="Enter Customer Number" id = 'phone' 
-												 pattern="[0-9]{11}"  required>
+												 pattern="[0-9]{11}" >
 											</div>
 
 											<div class="form-group">

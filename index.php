@@ -1,11 +1,11 @@
-     <?php 
-     session_start();
+     <?php session_start();
+
      $connection =  include_once('resources/conection.inc.php');
 
      if(isset($_SESSION['user']))
      {
-      header("location:stock/new.php");
-    }
+      header("location:sales/sell.php");
+     }
 
     if (isset($_POST['submit']))
     { 
@@ -15,9 +15,16 @@
 
       $password = htmlentities($_POST['password']);
       $password = strtoupper(mysqli_real_escape_string($connection,$password));
-      //$password = md5($password);
+      
+      $usertype = NULL;
 
-      $query = "SELECT * FROM users where username = '$username' AND password = '$password'";
+      if($_POST['usertype'] == 'User'){
+        $usertype = 1;
+      }else if($_POST['usertype'] == 'Super User'){
+        $usertype = 2;
+      }
+      
+      $query = "SELECT * FROM users where username = '$username' AND password = '$password' AND type = '$usertype' ";
       // echo $query;
       $result = mysqli_query($connection, $query);
       $count = mysqli_num_rows($result);
@@ -31,8 +38,7 @@
       else
       {
         $_SESSION['login_error'] = 'error';
-        echo 'false data';
-
+        // echo 'false data';
       }
 
     }
@@ -44,7 +50,7 @@
     <head>
       <meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <title>Mukaz | Login</title>
+      <title>MUKAZ |Login</title>
       <!-- Tell the browser to be responsive to screen width -->
       <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
       <!-- Bootstrap 3.3.6 -->
@@ -76,7 +82,7 @@
   margin-top:10%;
 }
 
-input {
+input,select {
   text-transform: uppercase;
 }
 
@@ -88,7 +94,7 @@ input {
 
  <header class="main-header">
   <!-- Logo -->
-  <a href="../../index2.html" class="logo">
+  <a href="index.php" class="logo">
     <!-- mini logo for sidebar mini 50x50 pixels -->
     <span class="logo-mini"><b>A</b>LT</span>
     <!-- logo for regular state and mobile devices -->
@@ -96,27 +102,11 @@ input {
   </a>
   <!-- Header Navbar: style can be found in header.less -->
   <nav class="navbar navbar-static-top">
-    <!-- Sidebar toggle button-->
-    
-   <!--  <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-      <span class="sr-only">Toggle navigation</span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-    </a>
- -->
     <div class="navbar-custom-menu">
 
     </div>
   </nav>
 </header>
-
-
-
-
-
-
-
 
 <div class= "container-fluid">
   <div class = "row">
@@ -134,72 +124,77 @@ input {
       <div class="box-body" style="padding: 30px">
         <form class="form-horizontal" method = 'POST' action = '<?php echo $_SERVER['PHP_SELF']?>'>
 
-          <div class="form-group holder ">
-           <label for="inputEmail3" control-label">Username</label>
-           <input type="text" class="form-control  " id="inputEmail3" autocomplete="false"  placeholder="Email" name = 'username'>
-         </div>
+          <div class="row">
 
-         <div class="form-group holder">
-          <label for="inputPassword3"  control-label">Password</label>
-          <input type="password" class="form-control " id="inputPassword3" placeholder="Password" name = 'password'>
-        </div>
+            <!-- check if there is error in the session -->
+            <?php if (isset($_SESSION['login_error'])): ?>
+              <div class="alert alert-danger">wrong username and password combination </div>
+              <?php unset($_SESSION['login_error']) ?>
+            <?php endif ?>
 
-        <div class="form-group">
-          <div class="checkbox">
-            <label>
-              <input type="checkbox"> Remember me
-            </label>
+            <div class="col col-md-12">
+              <div class="form-group holder ">
+               <label for="inputEmail3" control-label">Username</label>
+               <input autocomplete="off" autofocus="true" type="text" class="form-control  " id="inputEmail3"  placeholder="Username" name = 'username'>
+             </div>
+           </div>
+
+           <div class="col col-md-12">
+             <div class="form-group holder">
+              <label for="inputPassword3"  control-label">Password</label>
+              <input autocomplete="off" autofocus="true" type="password" class="form-control " id="inputPassword3" placeholder="Password" name = 'password'>
+            </div>
           </div>
 
-        </div>
+          <div class="col col-md-12">
+            <div class="form-group holder"> 
+             <label for="usertype"  control-label">user type</label>  
+             <select id = 'usertype' name = 'usertype' style="width: 100%; height: 35px">
+               <option>User</option>
+               <option>Super User</option>
+             </select>
+           </div>
+         </div>
+
+       </div>
 
 
+     </div>
+     <!-- /.box-body -->
+     <div class="box-footer">
 
-      </div>
-      <!-- /.box-body -->
-      <div class="box-footer">
+      <button type="submit" name = 'submit' class="btn btn-info pull-right input-lg">Sign in</button>
 
-        <button type="submit" name = 'submit' class="btn btn-info pull-right">Sign in</button>
+      <button class = 'input-lg btn btn-success pull-left g' >
+        <a href="signup.php"  name = 'SignUp' style="color:white" >Register</a>
+      </button>
+    </div>
+  </form>
+  <!-- /.box-footer -->
 
-        <a href="signup.php"  name = 'SignUp' class="btn btn-success pull-left">Register</a>
-      </div>
-    </form>
-    <!-- /.box-footer -->
-
-  </div>
 </div>
 </div>
 </div>
-<script src=".js/jquery-2.2.3.min.js"></script>
+</div>
+<script src="js/jquery-2.2.3.min.js"></script>
 <!-- Bootstrap 3.3.6 -->
 <script src="js/bootstrap.min.js"></script>
 <!-- FastClick -->
 <script src="js/fastclick.min.js"></script>
 <script type="text/javascript">
 
-  $('document').ready(function () {
-    var error  = "<span class='help-block'>Passwords Do not match</span>";
-    $('input').click(function(){
-      $('.holder').removeClass('has-error');
-      $('help-block').slideUp();
-    });
-    <?php
+  $('document').ready(function(){
 
-    if(isset($_SESSION['login_error'])){
-        //echo "console.log('pworderr');";
-      echo "$('.holder').addClass('has-error');";
-      echo "$('.holder').append(error);";
-      unset($_SESSION['login_error']);
-    }
-    ?>
+    $('input').click(function(){
+        $('.alert').slideUp();
+    });
 
   });
   
 </script>
 <!-- AdminLTE App -->
-<!-- <script src="../../dist/js/app.min.js"></script> -->
-<!-- AdminLTE for demo purposes -->
-<!-- <script src="../../dist/js/demo.js"></script> -->
+<script src="dist/js/app.min.js"></script>
+<script src="dist/js/demo.js"></script>
 </body>
 </html>
 

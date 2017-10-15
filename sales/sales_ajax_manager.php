@@ -49,6 +49,7 @@ switch ($_POST['action']) {
 	echo "the session for invoice is set";
 	break;
 
+    // or add to cart 
 	case 'SETCUSTOMERID':
 	$_SESSION['customer_id'] = $_POST['customer_id'];
 	echo "the session for customer id  is set";
@@ -60,7 +61,8 @@ switch ($_POST['action']) {
 	$s_id = trim($_POST['stock_id']);
 	$q_sold = trim($_POST['quantity_sold']);
 	$q_per_ton = trim($_POST['quantity_per_ton']);
-	$subtotal = getSubTotal($connection,$s_id,$q_sold,$q_per_ton);
+	$s_price_per_ton = trim($_POST['price_per_ton']);
+	$subtotal = getTotal($s_price_per_ton,$q_per_ton,$q_sold); // this is the subtotal for this stock purchase
 	$s_desc = getStockDescription($s_id,$connection);
 
 	$status = checkQty($connection,$s_id,$q_sold);
@@ -74,14 +76,15 @@ switch ($_POST['action']) {
 		array_push($_SESSION['sales'], array(
 			"stock_id" => $s_id, 
 			"quantity" => $q_sold,
-			"subtotal"=> round($subtotal,2)
+			"subtotal"=> round($subtotal,2),
+			"price_per_ton" => $s_price_per_ton
 		));
 
 		
 		$pushed_index = end(array_keys($_SESSION['sales']));
 
 
-		echo json_encode(array("status" => "success", "description"=> $s_desc, "quantity"=> $q_sold , "subtotal" =>round($subtotal,2),'rmv_index' => $pushed_index));
+		echo json_encode(array("status" => "success", "description"=> $s_desc, "quantity"=> $q_sold , "subtotal" =>round($subtotal,2),'rmv_index' => $pushed_index,"price_per_ton" => $s_price_per_ton));
 			
 	}else{
         echo json_encode(array("status" => "error",  "desc" => $status));
@@ -91,18 +94,6 @@ switch ($_POST['action']) {
 }
 
 
-//returns subtotal when stock id an subtotal is entered
-function getSubTotal($connection,$stock_id,$quantity_sold,$quantity_per_ton){
-	$query = "SELECT * FROM stocks WHERE id = $stock_id";
-
-	if($result = mysqli_query($connection, $query)){
-		$data = mysqli_fetch_assoc($result);
-		return  getTotal($data['cost_per_ton'],$quantity_per_ton,$quantity_sold);
-	}else{
-		trigger_error("Notice: %s". mysqli_error($connection));
-	}
-
-}
 
 function checkQty($connection,$stock_id,$quantity){
 	$error_message = '';

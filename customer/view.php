@@ -1,5 +1,9 @@
+<?php session_start();
 
-<?php
+if(!isset($_SESSION['user'])){
+  header("Location: ../");
+}
+
 $connection = include('../resources/conection.inc.php');
 
 
@@ -53,7 +57,7 @@ function get_all($table){
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 2 | General Form Elements</title>
+  <title>MUKAZ | View Customers</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
@@ -96,6 +100,10 @@ function get_all($table){
 .edit{
  cursor: pointer;
  padding:10px;
+}
+
+input,textarea{
+  text-transform: uppercase;
 }
 
 input,select{text-transform: uppercase;}
@@ -256,10 +264,10 @@ input,select{text-transform: uppercase;}
                     <?php foreach ($datatable  as $row ): ?>
                       <tr>
                         <td><?= $row['id']?></td>
-                        <td><?=$row['customer_name']?></td>
+                        <td><?= strtoupper($row['customer_name'])?></td>
                         <td><?=$row['customer_phone']?></td>
                         <td> <?=Dformat($row['date_created'])?></td>
-                        <td><?=$row['address']?></td>
+                        <td><?= strtoupper($row['address'])?></td>
                         <td ><span class=" btn btn-sm bg-green glyphicon glyphicon-pencil edit" id = "test" customer_data = <?= "'". json_encode($row) ."'" ?>  ></span></td>
                       </tr>
 

@@ -1,7 +1,16 @@
-<?php
+<?php session_start();
 
 $connection = include('../resources/conection.inc.php');
 
+if(!isset($_SESSION['user'])){
+  header("Location: ../");
+}
+$user_data = unserialize($_SESSION['user']);
+
+if($user_data['type'] !== '2'){
+    echo '<h1>You Cannot Access This Page Pls Exit This Page As Quick As Possible!</h1>';
+    die();
+}
 
 if(isset ($_POST['receive_stock'])){
   $quantity_received = $_POST['quantity_received'];
@@ -99,7 +108,7 @@ function update($table,$field,$newvalue,$selection_condition = array()){
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 2 | General Form Elements</title>
+  <title>MUKAZ | Receive Stock</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->

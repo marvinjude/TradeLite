@@ -1,5 +1,9 @@
-<?php
-session_start();
+<?php session_start();
+
+if(!isset($_SESSION['user'])){
+  header("Location: ../");
+}
+
 $connection = include('../resources/conection.inc.php');
 
 // customer=10+-+JUDE+-+098888678&customer_phone=888&customer_address=2017-09-02&create_deposit=Deposit

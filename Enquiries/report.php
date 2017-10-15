@@ -1,5 +1,9 @@
-	<?php 
-	session_start();
+	<?php  session_start();
+  
+  if (!isset($_SESSION['user'])){
+  header("Location : ../index.php");
+  }
+
 	$connection = include('../resources/conection.inc.php');
 	include_once('ctrl-dailysales.php');
 

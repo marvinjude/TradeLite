@@ -1,11 +1,14 @@
 <?php session_start();
-$connection = include('../resources/conection.inc.php');
-include '../functions/debtors_functions.php';
-
 
 if (!isset($_SESSION['user'])){
   header("Location : ../index.php");
 }
+
+$connection = include('../resources/conection.inc.php');
+include '../functions/debtors_functions.php';
+
+
+
 $deptors_data = getAllDebtors($connection);
 ?>
 

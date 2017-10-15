@@ -1,6 +1,9 @@
-<?php
+<?php session_start();
 
-session_start();
+if(!isset($_SESSION['user'])){
+  header("Location: ../");
+}
+
 $connection = include('../resources/conection.inc.php');
 include_once('../functions/invoice_functions.php');
 include_once('ctrl-dailysales.php');
@@ -9,8 +12,8 @@ if (isset($_POST['generate_data'])){
   $start_date = $_POST['start_date'];
   $end_date = $_POST['end_date'];
 }else{
-  $start_date = date ('Y/m/d',strtotime('tomorrow')); //remove this b4 pushing
- $end_date =   date ('Y/m/d',strtotime('tomorrow')); // remove this b4 pushing
+  $start_date = date ('Y/m/d',strtotime('today')); //remove this b4 pushing
+ $end_date =   date ('Y/m/d',strtotime('today')); // remove this b4 pushing
 
   // $start_date = date ('d/m/Y') //use this
   // $end_date =   date ('d/m/Y') //use this 
@@ -222,15 +225,6 @@ th,td{
                             ?>
 
                           <?php endif ?>
-
-
-
-
-
-
-
-
-
                         </tbody>
                       </table>
 
@@ -351,12 +345,12 @@ th,td{
                       <tr>
                         <?php $raw_data = getRawData($connection,$start_date,$end_date);  ?>
 
-                        <td><?= $raw_data['total_sales']?></td>
-                        <td><?= $raw_data['customer_deposit']?></td>
-                        <td><?= $raw_data['bbf']?></td>
-                        <td><?= $raw_data['expenses'] ?></td>
-                        <td><?= $raw_data['bank_deposits']?></td>
-                        <td><?= getCashAtHand($raw_data)?></td>
+                        <td><?= number_format($raw_data['total_sales'])?></td>
+                        <td><?= number_format($raw_data['customer_deposit'])?></td>
+                        <td><?= number_format($raw_data['bbf'])?></td>
+                        <td><?= number_format($raw_data['expenses'] )?></td>
+                        <td><?= number_format($raw_data['bank_deposits'])?></td>
+                        <td><?= number_format(getCashAtHand($raw_data))?></td>
                         <td><?= date('d-m-Y',strtotime($start_date)) ?></td>
                         <td><?= date('d-m-Y',strtotime($end_date)) ?></td>
 
@@ -411,6 +405,7 @@ th,td{
                     <tr>
                       <th>Date</th>
                       <th>invoice Num</th>
+                      <th>Customer Name</th>
                       <th>Stock Description</th>
                       <th>QTY</th>
                       <th>Ton Price</th>
@@ -443,11 +438,12 @@ th,td{
                       <tr>
                         <td><?= Dformat($row['sale_date'])?></td>
                         <td><?= $row['invoice_number']?></td>
+                        <td><?= $row['customer_name']?></td>
                         <td><?= $row['description']?></td>
                         <td><?= $row['quantity']?></td>
-                        <td><?= $row['cost_per_ton'] ?></td>
-                        <td><?= $row['selling_price']?></td>
-                        <td><?= $row['subtotal']?></td>
+                        <td><?= number_format($row['cost_per_ton'])?></td>
+                        <td><?= number_format($row['selling_price'])?></td>
+                        <td><?= number_format($row['subtotal'])?></td>
 
                         <!-- empty td's -->
                         <td><?= '' ?></td>
@@ -471,13 +467,13 @@ th,td{
                        <td><?= '' ?></td>
                        <td><?= '' ?></td>
                        <td><?= '' ?></td>
-                       <!-- <td><?= '' ?></td> -->
                        <td><?= '' ?></td>
+                        <td><?= '' ?></td>
                        <td><?= '' ?></td>
                        <td><?= '' ?></td>
                        <!-- render data here -->
                        <td><?= $exp['expense_description'] ?></td>
-                       <td><?= $exp['expense_amount']  ?></td>
+                       <td><?= number_format($exp['expense_amount'])  ?></td>
                        <!-- <end data rendering -->
 
                         <td><?= '' ?></td>
@@ -500,17 +496,17 @@ th,td{
                         <td><?= '' ?></td>
                         <td><?= '' ?></td>
                         <td><?= '' ?></td>
-                        <!-- <td><?= '' ?></td> -->
                         <td><?= '' ?></td>
                         <td><?= '' ?></td>
                         <!-- empty td's -->
+                        <td><?= '' ?></td>
                         <td><?= '' ?></td>
                         <td><?= '' ?></td>
                         <!-- end empty td's -->
 
                         <!-- render data here -->
                         <td><?= $depo['bank_name']?></td>
-                        <td><?= $depo['amount_deposited']?></td>
+                        <td><?= number_format($depo['amount_deposited'])?></td>
                         <!-- end data rendering -->
 
                         <!-- empty td's -->
@@ -534,6 +530,7 @@ th,td{
                         <td><?= '' ?></td>
                         <td><?= '' ?></td>
                         <td><?= '' ?></td>
+                        <td><?= '' ?></td>
                         <!-- <td><?= '' ?></td> -->
                         <td><?= '' ?></td>
                         <td><?= '' ?></td>
@@ -545,7 +542,7 @@ th,td{
 
                         <!-- render data here -->
                         <td><?=$depo['customer_name'] ?></td>
-                        <td><?= $depo['amount_deposited'] ?></td>
+                        <td><?= number_format($depo['amount_deposited']) ?></td>
                         <!-- end render data here -->
                         <td><?= '' ?></td>
                       </tr>
@@ -570,11 +567,12 @@ th,td{
                         <td><?= '' ?></td>
                         <td><?= '' ?></td>
                         <td><?= '' ?></td>
+                        <td><?= '' ?></td>
                         <td><?= ''?></td>
                         <td><?= ''?></td>
                         <!-- end empty td's -->
                         <!-- render here  -->
-                        <td><?= $bbf['amount']?></td>
+                        <td><?= number_format($bbf['amount'])?></td>
                         <!-- render here  -->
                       </tr>
                     <?php endforeach ?>
@@ -591,7 +589,7 @@ th,td{
 
       <div class="row sale-bottom" style = > <!-- row for the submit button and print invoice -->
         <div class="col-md-12">
-          <form  action = "report.php" method = "GET"> >
+          <form  action = "report.php" method = "GET"> 
             <input type="text" name="start_date" value ="<?= $start_date ?>"  hidden>
             <input type="text" name="end_date" value = "<?= $end_date?>" hidden>
            <button type="submit" id = 'print' style = 'padding:10px;font-size: 30px;position:fixed;bottom:10px;left:90%;height:60px;width: 60px;border-radius: 50%' class="btn btn-success img-rounded"><i class="glyphicon glyphicon-print"></i></button>

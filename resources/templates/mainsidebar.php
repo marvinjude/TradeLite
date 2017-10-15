@@ -4,41 +4,30 @@
 <aside class="main-sidebar" >
   <!-- sidebar: style can be found in sidebar.less -->
   <section class="sidebar">
-     
+
     <!-- Sidebar user panel -->
     <div class="user-panel">
-      <!-- <div class="pull-left image">
+      <ul class="sidebar-menu">
+        <li class="header">MAIN MENU</li>
 
-  
-        <span class =glyphicon glyphicon-font
-      </div>
-      <div class="pull-left info">
-        <p>MUKAZ NIG. LTD.</p>
-        <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
-      </div>
-    </div> -->
-    <!-- search form -->
+        <?php $userdata = unserialize($_SESSION['user'])?>              
+            <?php if (isset($userdata['type']) && $userdata['type'] == '2'): ?>
+                <li class="active treeview">
+                  <a href="hello.htmp">
+                    <i class="glyphicon glyphicon-gift"></i> <span>Stock</span>
+                    <span class="pull-right-container">
+                      <small class="label pull-right bg-red">3</small>
+                    </span>
+                  </a>
+                  <ul class="treeview-menu">
+                    <li class="active">
 
-    <!-- /.search form -->
-    <!-- sidebar menu: : style can be found in sidebar.less -->
-    <ul class="sidebar-menu">
-      <li class="header">MAIN MENU</li>
-
-      <li class="active treeview">
-        <a href="hello.htmp">
-          <i class="glyphicon glyphicon-gift"></i> <span>Stock</span>
-          <span class="pull-right-container">
-            <small class="label pull-right bg-red">3</small>
-          </span>
-        </a>
-        <ul class="treeview-menu">
-          <li class="active">
-
-            <a href='<?php echo '../stock/new.php'?>'><i class="glyphicon glyphicon-plus"></i> New stock</a></li>
-            <li><a href='<?php echo'../stock/receive.php'?>' ><i class="glyphicon glyphicon-arrow-down"></i> Receive Stocks</a></li>
-            <li><a href='<?php echo'../stock/view.php'?>'><i class="  glyphicon glyphicon-eye-open"></i> View Stocks</a></li>
-          </ul>
-        </li>
+                      <a href='<?php echo '../stock/new.php'?>'><i class="glyphicon glyphicon-plus"></i> New stock</a></li>
+                      <li><a href='<?php echo'../stock/receive.php'?>' ><i class="glyphicon glyphicon-arrow-down"></i> Receive Stocks</a></li>
+                      <li><a href='<?php echo'../stock/view.php'?>'><i class="  glyphicon glyphicon-eye-open"></i> View Stocks</a></li>
+                    </ul>
+                  </li>
+                <?php endif ?>
 
         <li class="treeview">
           <a href="#">
@@ -69,7 +58,7 @@
           </ul>
         </li>
 
-          <li class="treeview">
+        <li class="treeview">
           <a href="#">
             <i class="glyphicon glyphicon-euro"></i>
             <span>Expense</span>
@@ -97,7 +86,7 @@
           </ul>
         </li>
 
-         <li class="treeview">
+        <li class="treeview">
           <a href="#">
             <i class="glyphicon glyphicon-stats"></i>
             <span>Enquiries</span>
@@ -126,7 +115,11 @@
         </li>
 
 
-
+         <li>
+          <a href="../changepassword.php">
+            <i class="glyphicon glyphicon-pencil"></i> <span>Change Password</span>
+          </a>
+        </li>
 
 
         <li>

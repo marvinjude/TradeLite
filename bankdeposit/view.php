@@ -1,4 +1,9 @@
-<?php 
+<?php session_start();
+
+if(!isset($_SESSION['user'])){
+  header("Location: ../");
+}
+
 $connection = include('../resources/conection.inc.php');
 $data = array();
 
@@ -31,7 +36,7 @@ function get_all($table){
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 2 | General Form Elements</title>
+  <title>MUKAZ | View Bank Deposit</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
@@ -130,7 +135,7 @@ function get_all($table){
                         <td><?=$row['bank_name']?></td>
                         <td><?=$row['depositor_name']?></td>
                         <td><?=$row['amount_deposited']?></td>
-                        <td><?=$row['date_deposited']?></td>
+                        <td><?=date('d/m/Y',strtotime($row['date_deposited']))?></td>
                       </tr>
 
                     <?php endforeach ?>

@@ -1,4 +1,9 @@
 <?php session_start();
+
+if (!isset($_SESSION['user'])){
+  header("Location : ../index.php");
+}
+
 require_once('../functions/invoice_functions.php');
 $connection = include('../resources/conection.inc.php');
   // check if the request method if get 

@@ -1,37 +1,6 @@
 <?php
 
 
-//expctecd json data
-// $theJson = json_decode('{
-// 	"customer_id": 11,
-// 	"sale_date" : "2017-09-12",
-// 	"invoice_number": 60002,
-// 	"seller_id": 1,
-// 	"total": 10,
-// 	"sales":[
-// 		{"stock_id": "1", "quantity": "5000" ,"subtotal": "9087"},
-// 		{"stock_id": "2" , "quantity": "5000" , "subtotal": "789"},
-// 		{"stock_id": "3" , "quantity": "5000" ,"subtotal" :"67890"}
-// 	],
-//     "amount_paid" : "9000"
-// }') or $_POST['data'];
-
-
-// $JSON_FROM_CLIENT = json_decode('{
-// 	"customer_id": 11,
-// 	"sale_date" : "2017-09-12",
-// 	"invoice_number": 60002,
-// 	"sales":[
-// 		{"stock_id": "1", "quantity": "5000" ,"subtotal": "9087"},
-// 		{"stock_id": "2" , "quantity": "5000" , "subtotal": "789"},
-// 		{"stock_id": "3" , "quantity": "5000" ,"subtotal" :"67890"}
-// 	],
-// 	......"amount_paid" : "9000"
-// }');
-
-
-
-
 //get sale id when invoice number is supplied
 function getSaleId($invoice_num,$mysqli){
 	$query = "SELECT id FROM sales WHERE invoice_number = $invoice_num";
@@ -134,12 +103,13 @@ function createNewSale($mysqli,$theJson){
 
 
 function storeSubsales($mysqli,$theJson){
-	if (!$stmt = $mysqli->prepare("INSERT INTO subsales (stock_id, quantity, subtotal,selling_price,sale_id) VALUES (?,?,?,?,?)")){
+	if (!$stmt = $mysqli->prepare("INSERT INTO subsales (stock_id, quantity, subtotal,selling_price,price_per_ton,sale_id) VALUES (?,?,?,?,?,?)")){
 		echo 'unable to prepare statement';
 	}
 
 
-	$stmt->bind_param("ddddd", $stock_id, $stock_quantity, $total,$selling_price ,$sale_id);
+	$stmt->bind_param("dddddd", $stock_id, $stock_quantity, $total,$selling_price,
+		$price_per_ton,$sale_id);
 
         //get the last sale id stored into session
 	$last_id = $_SESSION['last_sale_id'];
@@ -147,6 +117,7 @@ function storeSubsales($mysqli,$theJson){
 		$stock_id = $sale->stock_id;
 		$stock_quantity = $sale->quantity ;
 		$total = $sale->subtotal;
+		$price_per_ton = $sale->price_per_ton;
 		$selling_price =  getRate($total,$stock_quantity);
 		$sale_id = $last_id;
 		$stmt->execute();
@@ -179,7 +150,7 @@ function getPreparedInvoiceData($sale_id,$mysqli){
     	$invoice_row = array(
     		"S_N" => ++$i,
     		"quantity" => $row['quantity'],
-    		"price_per_ton" => $row['cost_per_ton'],
+    		"price_per_ton" => $row['price_per_ton'],
     		"rate" => round(($row['subtotal'] / $row['quantity']),2),
     		"subtotal"  => $row['subtotal'],
     		"description" => $row['description']
@@ -196,7 +167,7 @@ function getPreparedInvoiceData($sale_id,$mysqli){
 //genetated the data that needs to be rendered on the invoice for the last saleID
 //gets :description,price per ton,quantity
 function getStocksPurchases($mysqli,$sale_id){
-	$query = "SELECT stocks.description,stocks.cost_per_ton,subsales.quantity,subsales.subtotal FROM sales INNER join subsales ON sales.id = subsales.sale_id INNER JOIN stocks ON stocks.id = subsales.stock_id WHERE sales.id = '$sale_id'";
+	$query = "SELECT stocks.description,subsales.price_per_ton,subsales.quantity,subsales.subtotal FROM sales INNER join subsales ON sales.id = subsales.sale_id INNER JOIN stocks ON stocks.id = subsales.stock_id WHERE sales.id = '$sale_id'";
 
 	if($result = mysqli_query($mysqli,$query)){
 		return $result ;

@@ -1,4 +1,9 @@
-<?php 
+<?php session_start();
+
+if(!isset($_SESSION['user'])){
+  header("Location: ../");
+}
+
 $connection = include('../resources/conection.inc.php');
 $data = array();
 
@@ -31,7 +36,7 @@ function get_all($table){
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 2 | General Form Elements</title>
+  <title>MUKAZ | View Balance Brought Forward</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
@@ -106,7 +111,7 @@ function get_all($table){
           <div class = 'col col-md-12'>
             <div class="box with-border box-aqua">
               <div class="box-header bg-aqua ">
-                <h3 class="box-title">View Balance Brought Foward</h3>
+                <h3 class="box-title">Balance Brought Foward</h3>
               </div>
               <!-- /.box-header -->
               <div class="box-body">
@@ -126,7 +131,7 @@ function get_all($table){
                       <tr>
                         <td><?= $row['id']?></td>
                         <td><?=$row['amount']?></td>
-                        <td><?=$row['date']?></td>
+                        <td><?=date('d/m/Y',strtotime($row['date']))?></td>
                       </tr>
 
                     <?php endforeach ?>
