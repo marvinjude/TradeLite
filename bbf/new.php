@@ -1,7 +1,7 @@
 <?php session_start();
 
 if(!isset($_SESSION['user'])){
-  header("Location: ../");
+	header("Location: ../");
 }
 
 $connection = include('../resources/conection.inc.php'); 
@@ -96,8 +96,8 @@ input{
 					<hr>         
 					<ol class="breadcrumb">
 						<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-						<li><a href="#">pnb</a></li>
-						<li class="active">view</li>
+						<li><a href="#">BBF</a></li>
+						<li class="active">new</li>
 					</ol>
 				</section>
 
@@ -138,58 +138,49 @@ input{
 														<!-- /.form-group -->
 														<div class="form-group">
 															<label>Date</label>
-															<input name = 'date' type="date" class="form-control" required>
+															<input name = 'date' type="date" class="form-control" required
+															value= '<?= date('Y-m-d',strtotime('today'))?>' >
 														</div>
 
-														<!--date created-->
 
-                       <!-- <div class="form-group">
-                          <label>Date Created</label>
-                          <input name = 'expense_date' type="date" class="form-control" placeholder="Enter created date" required>
-                      </div>-->
-                      <!-- /.form-group -->
-                      <input type="submit" name = 'balance_submit' class="btn btn-primary pull-right" value = "save balance">
-                  </form>
-              </div>
-              <!-- /.col -->
+														<input type="submit" name = 'balance_submit' class="btn btn-primary pull-right" value = "save balance">
+													</form>
+												</div>
+												<!-- /.col -->
 
-              <!-- /.col -->
-          </div>
-          <!-- /.row -->
-      </div>
-      <!-- /.box-body -->
-          <!-- <div class="box-footer">
-            Visit <a href="https://select2.github.io/">Select2 documentation</a> for more examples and information about
-            the plugin.
-        </div> -->
-    </div>
+												<!-- /.col -->
+											</div>
+											<!-- /.row -->
+										</div>
 
-</section>
-</div>
-</div>
-</div>
-</form>
-</div>
+									</div>
+
+								</section>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
 
 
 
 
-<script src="../js/jquery-2.2.3.min.js"></script>
-<!-- Bootstrap 3.3.6 -->
-<script src="../js/bootstrap.min.js"></script>
-<!-- FastClick -->
-<script src="../js/fastclick.min.js"></script>
-<!-- AdminLTE App -->
-<script src="../dist/js/app.min.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="../dist/js/demo.js"></script> 
-</body>
+			<script src="../js/jquery-2.2.3.min.js"></script>
+			<!-- Bootstrap 3.3.6 -->
+			<script src="../js/bootstrap.min.js"></script>
+			<!-- FastClick -->
+			<script src="../js/fastclick.min.js"></script>
+			<!-- AdminLTE App -->
+			<script src="../dist/js/app.min.js"></script>
+			<!-- AdminLTE for demo purposes -->
+			<script src="../dist/js/demo.js"></script> 
+		</body>
 
-<script type="text/javascript">
+		<script type="text/javascript">
 
-	$('document').ready(function(){
-		setTimeout(function(){ $('.alert').fadeOut()},3000);
-	});
+			$('document').ready(function(){
+				setTimeout(function(){ $('.alert').slideUp()},3000);
+			});
 
-</script>
-</html>
+		</script>
+		</html>

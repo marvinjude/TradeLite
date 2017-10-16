@@ -6,13 +6,13 @@ if(!isset($_SESSION['user'])){
 $connection = include('../resources/conection.inc.php');
 
 if (isset($_POST['submit_deposits'])){
-  $depositor_name = trim(mysqli_real_escape_string($connection, htmlentities($_POST['depositor_name'])));
+  // $depositor_name = trim(mysqli_real_escape_string($connection, htmlentities($_POST['depositor_name'])));
   $bank_name = mysqli_real_escape_string($connection, htmlentities($_POST['bank_name']));
   $amount_deposited = mysqli_real_escape_string($connection, htmlentities($_POST['amount_deposited']));
   $date_deposited = mysqli_real_escape_string($connection, htmlentities($_POST['date_deposited']));
 
-  $query = "INSERT INTO bank_deposits(depositor_name, bank_name, amount_deposited,date_deposited) 
-  VALUES ('$depositor_name' , '$bank_name', '$amount_deposited','$date_deposited')";
+  $query = "INSERT INTO bank_deposits(bank_name, amount_deposited,date_deposited) 
+  VALUES ('$bank_name', '$amount_deposited','$date_deposited')";
 
     //echo $querY
   $result = mysqli_query($connection, $query);
@@ -99,8 +99,8 @@ if (isset($_POST['submit_deposits'])){
           <hr>         
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li><a href="#"></a></li>
-            <li class="active"></li>
+            <li><a href="#">Bank Deposit</a></li>
+            <li class="active">New</li>
           </ol>
         </section>
         
@@ -124,14 +124,20 @@ if (isset($_POST['submit_deposits'])){
                 <div class="box-body">
                   <div class="row">
                     <div class="col-md-12">
+                      <?php
+                        $alert ="<div class='alert  alert-success alert-dismissible animated slideInLeft'>
+                        <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+                        <i class='glyphicon glyphicon-ok'></i> Successful
+                        </div>";
+
+                        if(isset($_SESSION['create_bank_success'])){
+                          echo $alert;
+                          unset($_SESSION['create_bank_success']);
+                        }
+                        ?>
 
                       <form method="POST" action = "<?php echo $_SERVER['PHP_SELF'];?>">
                         <div class="form-group">
-
-                          <div class="form-group">
-                            <label>Depositors Name</label>
-                            <input type="text" name = 'depositor_name' class="form-control" placeholder="Enter depositors name" required>
-                          </div>
 
                           <!-- /.form-group -->
                           <div class="form-group">
@@ -148,7 +154,7 @@ if (isset($_POST['submit_deposits'])){
                           <!--date created-->
                           <div class="form-group">
                             <label>Date Deposited</label>
-                            <input name = 'date_deposited' type="date" class="form-control" placeholder="Enter date deposited" required>
+                            <input name = 'date_deposited' type="date" class="form-control" placeholder="Enter date deposited"  value= '<?= date('Y-m-d',strtotime('today'))?>' required>
                           </div>
                           <!-- /.form-group -->
                           <input type="submit" name = 'submit_deposits' class="btn btn-primary pull-right" value = "save"></button>
@@ -186,6 +192,13 @@ if (isset($_POST['submit_deposits'])){
 <script src="../dist/js/app.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../dist/js/demo.js"></script> 
+
+<script type="text/javascript">
+  $('document').ready(function(){
+        setTimeout(function(){ $('.alert').slideUp()},3000);
+      });
+
+</script>
 
 </body>
 </html>

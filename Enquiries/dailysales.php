@@ -12,11 +12,9 @@ if (isset($_POST['generate_data'])){
   $start_date = $_POST['start_date'];
   $end_date = $_POST['end_date'];
 }else{
-  $start_date = date ('Y/m/d',strtotime('today')); //remove this b4 pushing
- $end_date =   date ('Y/m/d',strtotime('today')); // remove this b4 pushing
+  $start_date = date ('Y/m/d',strtotime('today')); 
+ $end_date =   date ('Y/m/d',strtotime('today')); 
 
-  // $start_date = date ('d/m/Y') //use this
-  // $end_date =   date ('d/m/Y') //use this 
 }
 
 ?>
@@ -285,7 +283,7 @@ th,td{
 
                          <!-- center arrow  -->
                          <div class="col-xs-12 col-md-1 center-text">
-                          <span class = "glyphicon glyphicon-arrow-right"></span>
+                          to 
                         </div>
                         <!-- end center arrow  -->
 

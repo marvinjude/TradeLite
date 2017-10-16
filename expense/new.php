@@ -19,9 +19,9 @@ if (isset($_POST['expense_submit'])){
     //echo $querY
     $result = mysqli_query($connection, $query);
     if($result){
-      echo "recored created";
+       $_SESSION['created'] = 'created';
     }else{
-      echo "not created ".mysqli_error($connection);
+        $_SESSION['create_error'] = 'error';
     }
 }
     
@@ -100,8 +100,8 @@ if (isset($_POST['expense_submit'])){
           <hr>         
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li><a href="#">Post Expense</a></li>
-            <li class="active">View Expense</li>
+            <li><a href="#">Expense</a></li>
+            <li class="active">New</li>
           </ol>
         </section>
         
@@ -125,7 +125,17 @@ if (isset($_POST['expense_submit'])){
                 <div class="box-body">
                   <div class="row">
                   <div class="col-md-12">
-                  
+                    <?php
+                        $alert ="<div class='alert  alert-success alert-dismissible animated slideInLeft'>
+                        <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+                        <i class='glyphicon glyphicon-ok'></i> Successful
+                        </div>";
+
+                        if(isset($_SESSION['created'])){
+                          echo $alert;
+                          unset($_SESSION['created']);
+                        }
+                      ?>
                     <form method="POST" action = "<?php echo $_SERVER['PHP_SELF'];?>">
                       <div class="form-group">
 
@@ -140,11 +150,10 @@ if (isset($_POST['expense_submit'])){
                           <input name = 'expense_amount' type="number" class="form-control" placeholder="Enter The Amount" required>
                         </div>
 
-                        <!--date created-->
-
                         <div class="form-group">
                           <label>Date Created</label>
-                          <input name = 'expense_date' type="date" class="form-control" placeholder="Enter created date" required>
+                          <input name = 'expense_date' type="date" class="form-control" placeholder="Enter created date" 
+                           value= '<?= date('Y-m-d',strtotime('today'))?>' required>
                         </div>
                         <!-- /.form-group -->
                         <input type="submit" name = 'expense_submit' class="btn btn-primary pull-right" value = "Save expense">
@@ -157,10 +166,6 @@ if (isset($_POST['expense_submit'])){
                   <!-- /.row -->
                 </div>
                 <!-- /.box-body -->
-          <!-- <div class="box-footer">
-            Visit <a href="https://select2.github.io/">Select2 documentation</a> for more examples and information about
-            the plugin.
-          </div> -->
         </div>
 
       </section>
@@ -182,5 +187,11 @@ if (isset($_POST['expense_submit'])){
 <script src="../dist/js/app.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../dist/js/demo.js"></script> 
+<script type="text/javascript">
+  $('document').ready(function(){
+        setTimeout(function(){ $('.alert').slideUp()},3000);
+      });
+
+</script>
 </body>
 </html>
