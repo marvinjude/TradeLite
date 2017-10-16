@@ -3,14 +3,6 @@ $connection = include('../resources/conection.inc.php');
 include_once('../functions/invoice_functions.php');
 // this file is reponsible for pulling pout the sales data inputed in the session by sale_ajax_manager
 
-//pull out this users id from session
-// $user = unserialize($_SESSION['user']);
-// $user_id = $user['id'];
-// $_SESSION['seller_id'] = $user_id;
-
-// unset($_SESSION['user']);
-
-
 
 //store the action from ajax req into variable
 

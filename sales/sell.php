@@ -334,7 +334,7 @@
        }
 
      // success,inf0 error warning
-     function showToast(type, message){
+     function showToast(type, message,time= 3000){
       var useEdge = true;
       var useDebug = false;
 
@@ -343,7 +343,8 @@
         square: true,
         edge: useEdge,
         debug: useDebug,
-        type : type 
+        type : type,
+        timeout : time
       });
     }
 
@@ -474,16 +475,18 @@
               if(data.status == 'success'){
                 $('#cart').append(getStockBox(data.description,data.quantity,data.subtotal,data.rmv_index,data.price_per_ton));
                 updateQuantityAndTotal();
-                showToast('success', 'Stock Added');
+                if(data.qty_status_message ==''){
+                  showToast('success', 'Stock Added');
+                }else{
+                   showToast('info', 'Stock Added, ' + data.qty_status_message, 10000);
+                }
+                
                 bindRemover();
                 $('#stock').val('');
                 $('#quantity_sold').val('');
                 $('#quantity_per_ton').val('');
 
-              }else if(data.status == 'error'){
-               console.log(data);
-               showToast('error', data.desc);
-             }
+              }
 
            });  
           }   

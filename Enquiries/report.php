@@ -63,6 +63,7 @@
 		}
 		tr,td{
 			white-space: nowrap;
+      text-transform: uppercase;
 		}
 
 		.invoice-details{
@@ -143,12 +144,12 @@
 		<div class="row">
 			<div class="col-xs-12 ">
 				<!-- <div class = 'table-responsive'> -->
-					 <table class="table table-striped table-bordered bring-up nth-2-center" style="background-color: white; 
-                  ">
-                  <thead>
+		<table class="table table-striped table-bordered bring-up nth-2-center" style="background-color: white;">
+                   <thead>
                     <tr>
                       <th>Date</th>
                       <th>invoice Num</th>
+                      <th>Customer Name</th>
                       <th>Stock Description</th>
                       <th>QTY</th>
                       <th>Ton Price</th>
@@ -181,11 +182,12 @@
                       <tr>
                         <td><?= Dformat($row['sale_date'])?></td>
                         <td><?= $row['invoice_number']?></td>
+                        <td><?= $row['customer_name']?></td>
                         <td><?= $row['description']?></td>
                         <td><?= $row['quantity']?></td>
-                        <td><?= $row['cost_per_ton'] ?></td>
-                        <td><?= $row['selling_price']?></td>
-                        <td><?= $row['subtotal']?></td>
+                        <td><?= number_format($row['cost_per_ton'])?></td>
+                        <td><?= number_format($row['selling_price'])?></td>
+                        <td><?= number_format($row['subtotal'])?></td>
 
                         <!-- empty td's -->
                         <td><?= '' ?></td>
@@ -209,13 +211,13 @@
                        <td><?= '' ?></td>
                        <td><?= '' ?></td>
                        <td><?= '' ?></td>
-                       <!-- <td><?= '' ?></td> -->
                        <td><?= '' ?></td>
+                        <td><?= '' ?></td>
                        <td><?= '' ?></td>
                        <td><?= '' ?></td>
                        <!-- render data here -->
                        <td><?= $exp['expense_description'] ?></td>
-                       <td><?= $exp['expense_amount']  ?></td>
+                       <td><?= number_format($exp['expense_amount'])  ?></td>
                        <!-- <end data rendering -->
 
                         <td><?= '' ?></td>
@@ -238,17 +240,17 @@
                         <td><?= '' ?></td>
                         <td><?= '' ?></td>
                         <td><?= '' ?></td>
-                        <!-- <td><?= '' ?></td> -->
                         <td><?= '' ?></td>
                         <td><?= '' ?></td>
                         <!-- empty td's -->
+                        <td><?= '' ?></td>
                         <td><?= '' ?></td>
                         <td><?= '' ?></td>
                         <!-- end empty td's -->
 
                         <!-- render data here -->
                         <td><?= $depo['bank_name']?></td>
-                        <td><?= $depo['amount_deposited']?></td>
+                        <td><?= number_format($depo['amount_deposited'])?></td>
                         <!-- end data rendering -->
 
                         <!-- empty td's -->
@@ -272,6 +274,7 @@
                         <td><?= '' ?></td>
                         <td><?= '' ?></td>
                         <td><?= '' ?></td>
+                        <td><?= '' ?></td>
                         <!-- <td><?= '' ?></td> -->
                         <td><?= '' ?></td>
                         <td><?= '' ?></td>
@@ -283,7 +286,7 @@
 
                         <!-- render data here -->
                         <td><?=$depo['customer_name'] ?></td>
-                        <td><?= $depo['amount_deposited'] ?></td>
+                        <td><?= number_format($depo['amount_deposited']) ?></td>
                         <!-- end render data here -->
                         <td><?= '' ?></td>
                       </tr>
@@ -308,11 +311,12 @@
                         <td><?= '' ?></td>
                         <td><?= '' ?></td>
                         <td><?= '' ?></td>
+                        <td><?= '' ?></td>
                         <td><?= ''?></td>
                         <td><?= ''?></td>
                         <!-- end empty td's -->
                         <!-- render here  -->
-                        <td><?= $bbf['amount']?></td>
+                        <td><?= number_format($bbf['amount'])?></td>
                         <!-- render here  -->
                       </tr>
                     <?php endforeach ?>
