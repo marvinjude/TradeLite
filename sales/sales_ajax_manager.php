@@ -67,8 +67,7 @@ switch ($_POST['action']) {
 
 	$status = checkQty($connection,$s_id,$q_sold);
 
-	// if ($status  == ''){  the owner stated that he want stock level to decrease even if its 0,
-	// so here i stoped a check on the quantity
+	if ($status  == ''){
 
 		if(!isset($_SESSION['sales'])){
 			$_SESSION['sales'] = array();     // if empty initialixe with emoty array
@@ -85,11 +84,11 @@ switch ($_POST['action']) {
 		$pushed_index = end(array_keys($_SESSION['sales']));
 
 
-		echo json_encode(array("status" => "success", "description"=> $s_desc, "quantity"=> $q_sold , "subtotal" =>round($subtotal,2),'rmv_index' => $pushed_index,"price_per_ton" => $s_price_per_ton, "qty_status_message" => $status));
+		echo json_encode(array("status" => "success", "description"=> $s_desc, "quantity"=> $q_sold , "subtotal" =>round($subtotal,2),'rmv_index' => $pushed_index,"price_per_ton" => $s_price_per_ton));
 			
-	// }else{  as a result of the above changes this was commented,
-    //        echo json_encode(array("status" => "error",  "desc" => $status));
-	// }
+	}else{
+        echo json_encode(array("status" => "error",  "desc" => $status));
+	}
    
 	 break ;
 }
@@ -102,8 +101,8 @@ function checkQty($connection,$stock_id,$quantity){
 	$old_quantity = getStockquantity($stock_id,$connection);
 
 	if ($old_quantity < $quantity){
-		$error_message = sprintf("Remember Your Stock Level For %s Is Low And Will Be Reduced To %d",
-		 getStockDescription($stock_id,$connection), $old_quantity - $quantity);	
+		$error_message = sprintf("Eroor! There are only %d %s in stock", 
+			$old_quantity, getStockDescription($stock_id,$connection));
 	}
 
 	if($error_message == ''){
