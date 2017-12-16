@@ -23,8 +23,7 @@ switch ($_POST['action']) {
          	$total_qty = getTotalFieldVal($_SESSION['sales'],'subtotal');
             $total_amount = getTotalFieldVal($_SESSION['sales'], 'quantity');
             echo json_encode(array('quantity'=>$total_qty, 'total'=> round($total_amount,2)));
-         }
-         
+         } 
     break;
 
 	case 'DELETE_INDEX':
@@ -52,7 +51,10 @@ switch ($_POST['action']) {
     // or add to cart 
 	case 'SETCUSTOMERID':
 	$_SESSION['customer_id'] = $_POST['customer_id'];
-	echo "the session for customer id  is set";
+	if($debtobject = customerIsDebtor($connection,$_POST['customer_id'])){
+		//if a debtobject is returned send to client
+        echo json_encode($debtobject);
+	}
 	break;
 
 	case 'STORESUBSALE':
@@ -67,7 +69,8 @@ switch ($_POST['action']) {
 
 	$status = checkQty($connection,$s_id,$q_sold);
 
-	if ($status  == ''){
+	// if ($status  == ''){  mukaz stated that they want stock level to decrease even if its 0,
+	// so here i stoped a check on the quantity
 
 		if(!isset($_SESSION['sales'])){
 			$_SESSION['sales'] = array();     // if empty initialixe with emoty array
@@ -84,11 +87,15 @@ switch ($_POST['action']) {
 		$pushed_index = end(array_keys($_SESSION['sales']));
 
 
-		echo json_encode(array("status" => "success", "description"=> $s_desc, "quantity"=> $q_sold , "subtotal" =>round($subtotal,2),'rmv_index' => $pushed_index,"price_per_ton" => $s_price_per_ton));
-			
-	}else{
-        echo json_encode(array("status" => "error",  "desc" => $status));
-	}
+		echo json_encode(
+			array("status" => "success",
+		           "description"=> $s_desc,
+		           "quantity"=> $q_sold , 
+		           "subtotal" =>round($subtotal,2),
+		           'rmv_index' => $pushed_index,
+		           "price_per_ton" => $s_price_per_ton,
+		           "qty_status_message" => $status
+		        ));
    
 	 break ;
 }
@@ -101,8 +108,8 @@ function checkQty($connection,$stock_id,$quantity){
 	$old_quantity = getStockquantity($stock_id,$connection);
 
 	if ($old_quantity < $quantity){
-		$error_message = sprintf("Eroor! There are only %d %s in stock", 
-			$old_quantity, getStockDescription($stock_id,$connection));
+		$error_message = sprintf("Remember Your Stock Level For %s Is Low And Will Be Reduced To %d",
+		 getStockDescription($stock_id,$connection), $old_quantity - $quantity);	
 	}
 
 	if($error_message == ''){
@@ -110,6 +117,22 @@ function checkQty($connection,$stock_id,$quantity){
 	}else {
 		return $error_message;
 	}
+}
+
+function customerIsDebtor($connection,$customer_id){
+	$query = "SELECT SUM(amount) as amount, customers.customer_name AS name FROM `debtors` INNER JOIN customers ON debtors.customer_id = customers.id  WHERE customer_id = '$customer_id'";
+
+	if($result = mysqli_query($connection,$query)){
+		$debt_arr = mysqli_fetch_assoc($result);
+		return [
+			'name'=> $debt_arr['name'],
+			'amount' => $debt_arr['amount']
+		];
+	}else{
+		trigger_error(mysqli_error($connection));
+		return false;
+	}
+
 }
 
 

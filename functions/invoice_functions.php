@@ -87,18 +87,44 @@ function checkStocksAvailability($data,$connection){
 
 function createNewSale($mysqli,$theJson){
 
-	$query = "INSERT INTO sales (id, customer_id, sale_date, invoice_number, total, amount_paid)
+	$query = "INSERT INTO sales (id, customer_id, sale_date, invoice_number, total, amount_paid,supply_status)
 	VALUES (NULL, '$theJson->customer_id','$theJson->sale_date', '$theJson->invoice_number',
-	'$theJson->total','$theJson->amount_paid')";
+	'$theJson->total','$theJson->amount_paid', $theJson->supply_status)";
+
 	
-	if($mysqli->query($query)){
+	if($mysqli->query($query))
+	{
+
+        //store debt in table if payment is incomplete
+        if($theJson->amount_paid < $theJson->total)
+        {
+        	storeDebt($mysqli,$theJson->customer_id, $theJson->invoice_number,$theJson->amount_paid
+        		,$theJson->total,$theJson->sale_date);
+        }
+
 		//store sale_id in session last_sale_id
 	   $_SESSION['last_sale_id'] = $mysqli->insert_id;
 		return true;
-	}else{
+	}
+	else{
 		echo mysqli_error($mysqli);
 		return false;
 	}
+
+ }
+
+
+function storeDebt($mysqli,$customer_id,$invoice_number, $amount_paid,$total,$date){
+	$debt = $total - $amount_paid; //cast this to integer to stop unimpotant balances from being debt
+    $query = "INSERT INTO debtors (id, customer_id,amount,invoice,debt_date) 
+              VALUES(NULL,'$customer_id','$debt', '$invoice_number','$date')";
+    if($mysqli->query($mysqli,$query))
+    {
+    	return true;
+    }
+    else{
+    	return false;
+    }
 }
 
 

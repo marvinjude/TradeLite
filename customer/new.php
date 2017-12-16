@@ -5,49 +5,33 @@ if(!isset($_SESSION['user'])){
 }
 
 $connection = include('../resources/conection.inc.php');
-if (isset($_POST['new_customer'])){
+$link_to_sales = '';
+if (isset($_POST['new_customer']) && trim($_POST['customer_name'] != '')){
 	$customer_name = trim(mysqli_real_escape_string($connection, htmlentities($_POST['customer_name'])));
 	$customer_phone = mysqli_real_escape_string($connection, htmlentities($_POST['customer_phone']));
 	$customer_address = mysqli_real_escape_string($connection, htmlentities($_POST['customer_address']));
 	$date_created = date('Y/m/d');
 
-	if(!phone_exist($customer_phone)){
-//$_SESSION['invalid_phone'] = 'error';
-		$query = "INSERT INTO customers (customer_name, customer_phone, address, date_created ) 
-		VALUES ('$customer_name', '$customer_phone' ,'$customer_address', '$date_created')";
+	$query = "INSERT INTO customers (customer_name, customer_phone, address, date_created ) 
+	VALUES ('$customer_name', '$customer_phone' ,'$customer_address', '$date_created')";
 
 
-		if (mysqli_query($connection, $query)) {
-			$_SESSION['customer_create_success'] = "success";
-		} else{
-			$_SESSION['create_stock_error'] = 'error';
-			trigger_error('Error: '. mysqli_error($connection));
-		}
+	if (mysqli_query($connection, $query)) {
+	     $customer_id = mysqli_insert_id($connection);
+	     $link_to_sales = getLink($customer_id);
 
-	}else{
-		$_SESSION['phone_exist_error'] = 'error';
+		$_SESSION['customer_create_success'] = "success";
+	} else{
+		$_SESSION['create_stock_error'] = 'error';
+		trigger_error('Error: '. mysqli_error($connection));
 	}
-
 
 }
 
-function phone_exist($phone){
-	global $connection;
-	$query = "SELECT * FROM customers WHERE customer_phone = '$phone' ";
-	if ($result = mysqli_query($connection,$query)){
-
-
-		mysqli_num_rows($result);
-
-
-		if (mysqli_num_rows($result) > 0) {
-			return true;
-		}else{
-			return false;
-		}
-	}else{
-		trigger_error("Error: " . $query . "<br>" . mysqli_error($connection));
-	}
+//drops a link to the sales page when a new customer is created
+function getLink($cus_id){
+   $link = "<a href = '../sales/sell.php?cid=" .$cus_id . "'>Sell Now</a>";
+   return $link;
 }
 
 
@@ -103,6 +87,9 @@ function phone_exist($phone){
   	.edit{
   		cursor: pointer;
   		padding:10px;
+  	}
+  	.padded{
+  		padding: 7px;
   	}
 
   	input,select{text-transform: uppercase;}
@@ -165,10 +152,12 @@ function phone_exist($phone){
 
 											<div class="col-md-10">
 												<?php
-												$alert ="<div class='alert  alert-success alert-dismissible animated slideInLeft'>
+												$alert ="<div class='alert  alert-success alert-dismissible animated slideInLeft'><div class = 'padded'>
 												<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
-												<i class='glyphicon glyphicon-ok'></i> Customer Created
-											</div>";
+												<i class='glyphicon glyphicon-ok'></i>
+												 Customer Created
+											    <button class = 'btn btn-warning pull-right'>".$link_to_sales."</button>
+											    </div></div>";
 
 											$alert2 ="<div class='alert  alert-danger alert-dismissible animated slideInLeft'>
 											<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
@@ -275,7 +264,7 @@ function phone_exist($phone){
 	?>
 
 	$('document').ready(function(){
-		setTimeout(function(){ $('.alert').fadeOut()},3000);
+		//setTimeout(function(){ $('.alert').fadeOut()},3000);
 	});
 </script>
 

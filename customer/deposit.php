@@ -176,10 +176,6 @@ function phone_exist($phone){
 									<div class="box-header with-border">
 										<h3 class="box-title"> Customer Deposit Form</h3>
 
-										<div class="box-tools pull-right">
-											<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-											<button type="button"  name = 'newstock' class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
-										</div>
 									</div>
 									<!-- /.box-header -->
 									<div class="box-body">
@@ -241,7 +237,7 @@ function phone_exist($phone){
 
 													<div class="form-group">
 														<label> Date</label>
-														<input  type="date" class="form-control" placeholder="Enter Customer Address" name = "date_created" required>
+														<input  type="date" class="form-control" placeholder="Enter Customer Address" name = "date_created"  value= '<?= date('Y-m-d',strtotime('today'))?>' required>
 													</div>
 
 													<!-- /.form-group -->

@@ -187,12 +187,14 @@ $('#proceed').click(function(){
 $('#add-stock').click(function(event){
   event.preventDefault();
   var stock = $('#stock');
+  var thisbutton = $(this);
 
   if ($('#stock').val() == '' || $('#quantity').val() == ''){
     showToast('error', "pls fill Up Those Spaces");
   }else{
 
     $stock_id = $('option:selected',stock).attr('id');
+    thisbutton.attr('disabled',true);
 
 //send the request to the server
 $.post("sales_ajax_manager.php",
@@ -220,6 +222,7 @@ function(data,status){
     $('#quantity_sold').val('');
     $('#quantity_per_ton').val('');
     $('#price_per_ton').val('');
+    thisbutton.attr('disabled',false);
   }
 
 });  

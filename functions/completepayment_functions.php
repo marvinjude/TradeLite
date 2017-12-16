@@ -1,17 +1,17 @@
 <?php
-function markPaymentCompleted($mysqli,$sale_id){
-	$query = "UPDATE sales SET amount_paid = total WHERE id = '$sale_id'";
+function markPaymentCompleted($mysqli,$debt_id){
+	$query = "UPDATE `debtors` SET `amount` = '0' WHERE `id` = '$debt_id'";
 	if(mysqli_query($mysqli,$query)){
 		return true;
 	}else{
+		echo mysqli_error($mysqli);
 		return false;
 	}
 }
 
-//this function add to the amount _paid field for a sale id in tyhe db
-function setNewPayment($mysqli,$sale_id,$amount_paid ){
-	$query = "UPDATE sales SET amount_paid = amount_paid + $amount_paid WHERE id = '$sale_id'";
-	echo $query;
+// reduce the customers debt by @params $amount_paid
+function setNewPayment($mysqli,$debt_id,$amount_paid ){
+	$query = "UPDATE `debtors` SET `amount` = amount - $amount_paid WHERE `id` = '$debt_id'";
 	if(mysqli_query($mysqli,$query)){
 		return true;
 	}else{

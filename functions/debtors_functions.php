@@ -1,5 +1,41 @@
 <?php
-//returns result
+//new Implementation for getAllDebtors, getNumDebtors, getTotalDebt
+
+function getAllDebtors($mysqli){
+   $query = "SELECT customers.customer_name AS customer_name, debtors.id AS debt_id, customers.customer_phone AS   
+             customer_phone, debtors.invoice AS invoice, debtors.debt_date AS debt_date, debtors.amount AS amount
+             FROM debtors INNER JOIN customers ON debtors.customer_id = customers.id WHERE amount > 0";
+
+   if ($result = $mysqli->query($query)){
+   	  return $result;
+   }else{
+   	 echo mysqli_error($mysqli);
+   	 return false;
+   }
+}
+
+function getNumDebtors($mysqli){
+  $query = "SELECT COUNT(id) AS count FROM debtors WHERE amount > 0";
+    if ($result = $mysqli->query($query)){
+    	$count = mysqli_fetch_assoc($result)['count']; 
+    	return $count;
+    }
+
+}
+
+function getTotalDebt($mysqli){
+   $query = "SELECT SUM(amount) AS total_debt FROM debtors";
+    if ($result = $mysqli->query($query)){
+        $totaldebt = mysqli_fetch_assoc($result)['total_debt']; 
+    	return $totaldebt;
+    }
+}
+
+
+
+/*
+ *previous implemntation for getAllDebtors, getNumDebtors, getTotalDebt
+ *
 function getAllDebtors($mysqli){
 	$query = "SELECT
 	sales.id,
@@ -44,8 +80,6 @@ function getTotalDebt($mysqli){
 	}
 }
 
-
-
-
+*/
 
 ?>
