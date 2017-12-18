@@ -102,40 +102,6 @@ switch ($_POST['action']) {
 
 
 
-function checkQty($connection,$stock_id,$quantity){
-	$error_message = '';
-
-	$old_quantity = getStockquantity($stock_id,$connection);
-
-	if ($old_quantity < $quantity){
-		$error_message = sprintf("Remember Your Stock Level For %s Is Low And Will Be Reduced To %d",
-		 getStockDescription($stock_id,$connection), $old_quantity - $quantity);	
-	}
-
-	if($error_message == ''){
-		return '';
-	}else {
-		return $error_message;
-	}
-}
-
-function customerIsDebtor($connection,$customer_id){
-	$query = "SELECT SUM(amount) as amount, customers.customer_name AS name FROM `debtors` INNER JOIN customers ON debtors.customer_id = customers.id  WHERE customer_id = '$customer_id'";
-
-	if($result = mysqli_query($connection,$query)){
-		$debt_arr = mysqli_fetch_assoc($result);
-		return [
-			'name'=> $debt_arr['name'],
-			'amount' => $debt_arr['amount']
-		];
-	}else{
-		trigger_error(mysqli_error($connection));
-		return false;
-	}
-
-}
-
-
 
 
 

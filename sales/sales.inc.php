@@ -1,46 +1,72 @@
 <?php
 
-  $connection = include('../resources/conection.inc.php');
-  $sales = getAllSales($connection);
+$connection = include('../resources/conection.inc.php');
+include_once '../functions/invoice_functions.php';
+$sales = getAllSales($connection);
 
+//remove sales by id
+if(isset($_GET['sid'])){
+  $sale_id = trim($_GET['sid']);
+  removeSaleBySaleId($connection,$sale_id);
+  header("Location:sales.php");
+  exit();
+}
 
-  if(isset($_GET['sid'])){
-    $sale_id = trim($_GET['sid']);
-    removeSaleBySaleId($connection,$sale_id);
-    header("Location:sales.php");
-    exit();
-  }
+  //remove sale by invoice number
+if(isset($_POST['iid'])){
+ $iid  = trim($_POST['iid']);
+ if(removeSaleByInvoiceNum($connection,$iid)){
+   if($mysqli->affected_rows > 0){
+     echo json_encode(['status' => 1]);
+   }else{
+     echo json_encode(['status' => 0]);
+   }
+ }
+}
 
-  if(isset($_POST['iid'])){
-   $iid  = trim($_POST['iid']);
-   if(removeSaleByInvoiceNum($connection,$iid)){
-     if($mysqli->affected_rows > 0){
-       echo json_encode(['status' => 1]);
-     }else{
-       echo json_encode(['status' => 0]);
-    }
+//mark sales supply status as true 
+//reduce stock quantity for all subsales
+if(isset($_POST['sid_mark_supplied'])){
+  $sale_id = $_POST['sid_mark_supplied'];
+  $subsales = getSubSales($connection,$sale_id);
+  //set header
+   header("Content-Type: application/json");
+
+   //check the supply status which must be not supplied or '0' for this to work
+  if (getSaleByID($sale_id,$connection)['supply_status'] == '0'){
+   //reduce stock level 
+  //set sales status as supplied
+    if(reduceStockLevel($connection,$subsales) && setStatusSupplied($connection,$sale_id)){
+      echo json_encode(["status" => true]);
+    }else{
+     echo json_encode(["status" => false]);
+   }
+ }else{
+   echo json_encode(["status" => false]);
+ }
+
+ 
+}
+
+function removeSaleBySaleId($connection,$sale_id){
+  $query = "DELETE FROM `sales` WHERE `id` = '$sale_id'";
+  if(mysqli_query($connection,$query)){
+    return true;
+  }else{
+    trigger_error(mysqli_error($connection));
+    return false;
   }
 }
 
-  function removeSaleBySaleId($connection,$sale_id){
-    $query = "DELETE FROM `sales` WHERE `id` = '$sale_id'";
-    if(mysqli_query($connection,$query)){
-      return true;
-    }else{
-      trigger_error(mysqli_error($connection));
-     return false;
-   }
- }
-
  //forces an elises on on this number
- function forceElipses($number){
+function forceElipses($number){
   $number = string($number);
-    if(count($number) > 5){
-      return substr($number, 0,5);
-    }
- }
+  if(count($number) > 5){
+    return substr($number, 0,5);
+  }
+}
 
- function removeSaleByInvoiceNum($connection,$invoice_num){
+function removeSaleByInvoiceNum($connection,$invoice_num){
   $query = "DELETE FROM `sales` WHERE `invoice_number` = '$invoice_num'";
   if(mysqli_query($connection,$query)){
     return true;

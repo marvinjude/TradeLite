@@ -7,7 +7,7 @@ if(!isset($_SESSION['user'])){
 }
 $user_data = unserialize($_SESSION['user']);
 
-if($user_data['type'] !== 2){
+if($user_data['type'] != 2){
     echo '<h1>You Cannot Access This Page Pls Exit This Page As Quick As Possible!</h1>';
     die();
 }

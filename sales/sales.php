@@ -1,9 +1,9 @@
 <?php session_start();
 
 if (!isset($_SESSION['user'])){header("Location:../index.php");}
-?>
+  ?>
 
-<?php  include "sales.inc.php" ?>
+  <?php  include "sales.inc.php" ?>
 
   <!DOCTYPE html>
   <html>
@@ -244,14 +244,13 @@ if (!isset($_SESSION['user'])){header("Location:../index.php");}
               <td><?php echo  $sale['amount_paid'] ?></td>
               <td><?php echo $sale['total'] ?></td>
               <td>
-                <?php
-
-                   if($sale['supply_status'] == 1){
-                      echo 'YES';
-                   }else{
-                       echo 'NO';
-                   }
-                ?>
+                <?php if ($sale['supply_status'] == '1'): ?>
+                  YES
+                <?php else: ?>
+                  NO 
+                  <button class = "btn supplied-btn btn-sm btn-primary"
+                  style = "padding:0px" sale-id = "<?= $sale["id"]?>">supplied</button>
+                <?php endif ?>
               </td>
               <td><?php echo $sale['sale_date'] ?></td>
               <td>
@@ -320,7 +319,26 @@ if (!isset($_SESSION['user'])){header("Location:../index.php");}
       let number = $(this).attr('sales-count-all');
       $("#s2").text(number);
     });
+    
+    $(".supplied-btn").click(function(){
+      var sale_id = $(this).attr('sale-id');
+      if(confirm('Are You Sure You Want To Mark This Sales Items As Supplied?')){
 
+        $.post("../sales/sales.inc.php",
+        {
+          sid_mark_supplied: sale_id
+        },
+        function(data,status){
+          console.log(data);
+           if (data.status === true){
+               showToast("success", "You have Successfully Marked This Sale Items As Supplied");
+               location.reload();
+           }else{
+             showToast("error", "An error Occured");
+           }
+        });
+      }
+  });
 
 
     $("#delete-sale-by-invoice").on('click', function(){
@@ -333,64 +351,64 @@ if (!isset($_SESSION['user'])){header("Location:../index.php");}
         iid: invoice
       },
       function(data,status){
-      data = JSON.parse(data);
-       if(data.status == 1){
-        showToast('success', "Successfully Delete Sale With Invoice Number " + invoice);
-        setTimeout(()=>{location.reload()},3000);
-      }else{
-        showToast('error', "Unable To Delete Sale With Invoice Number " + invoice);
+        data = JSON.parse(data);
+        if(data.status == 1){
+          showToast('success', "Successfully Delete Sale With Invoice Number " + invoice);
+          setTimeout(()=>{location.reload()},3000);
+        }else{
+          showToast('error', "Unable To Delete Sale With Invoice Number " + invoice);
+        }
+      });
+  }});
+
+
+    $('.enter_amt_paid').click(function(){
+      $('.modal-reduce-debt').modal();
+      var sale_id = $(this).attr('sale_id');
+      $('#new-amount').val(sale_id);
+    });
+
+
+
+    $('.paid-all').click(function(){
+      var sid = $(this).attr('sale_id');
+      var invoice = $(this).attr('invoice-number');
+
+      var should_delete_sale = confirm(`Are You Sure You Want To Delete This Sales With Invoice Number ${invoice} Remember This Action Is Irreversabele`);
+      if(should_delete_sale){
+        console.log('Deleting...');
+        window.location = '../sales/sales.inc.php?sid=' + sid;
       }
     });
-  }});
-   
-
-  $('.enter_amt_paid').click(function(){
-    $('.modal-reduce-debt').modal();
-    var sale_id = $(this).attr('sale_id');
-    $('#new-amount').val(sale_id);
-  });
 
 
+    $(function () {
+      $("#example1").DataTable();
+      $('#example2').DataTable({
+        "fnRender":function(){
+         var sReturn = obj.aData[obj.DataColumn];
+         var returnButton = "<input class  type = 'submit'approveButton' value = 'click'> ";
+         return returnButton;
 
-  $('.paid-all').click(function(){
-    var sid = $(this).attr('sale_id');
-    var invoice = $(this).attr('invoice-number');
+       },
+       "paging": true,
+       "lengthChange": true,
+       "searching": true,
+       "ordering": true,
+       "info": true,
+       "autoWidth": true
+     });
+    });
 
-    var should_delete_sale = confirm(`Are You Sure You Want To Delete This Sales With Invoice Number ${invoice} Remember This Action Is Irreversabele`);
-    if(should_delete_sale){
-      console.log('Deleting...');
-      window.location = '../sales/sales.inc.php?sid=' + sid;
+
+    function showToast(type, message){
+      var useEdge = true;
+      var useDebug = false;
+      nativeToast({ message: message, square: true, edge: useEdge, debug: useDebug,  type : type });
     }
+
   });
-
-
-  $(function () {
-    $("#example1").DataTable();
-    $('#example2').DataTable({
-      "fnRender":function(){
-       var sReturn = obj.aData[obj.DataColumn];
-       var returnButton = "<input class  type = 'submit'approveButton' value = 'click'> ";
-       return returnButton;
-
-     },
-     "paging": true,
-     "lengthChange": true,
-     "searching": true,
-     "ordering": true,
-     "info": true,
-     "autoWidth": true
-   });
-  });
-
-     
-   function showToast(type, message){
-    var useEdge = true;
-    var useDebug = false;
-    nativeToast({ message: message, square: true, edge: useEdge, debug: useDebug,  type : type });
-  }
-
-});
-  </script>
+</script>
 
 </script>
 </body>

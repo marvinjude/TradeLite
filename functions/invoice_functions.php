@@ -1,5 +1,31 @@
 <?php
+//marks a sale's suppply_status as supplied
+function setStatusSupplied($connection,$sale_id){
+	$query = "UPDATE `sales` SET `supply_status` = 1 WHERE `id` = '$sale_id'";
+	if (mysqli_query($connection,$query)){
+		return true;
+	}else{
+		printf("Notice: %s", mysqli_error($mysqli));
+		return false;
+	}
+}
 
+//get subsales for a particular sale and present it as an object
+function getSubSales($connection,$sale_id){
+	$query = "SELECT subsales.stock_id AS stock_id, subsales.quantity AS quantity FROM `subsales` 
+	INNER JOIN sales ON sales.id = subsales.sale_id WHERE sales.id = '$sale_id'";
+    $object['sales']['sales'] = [];
+	if ($result = mysqli_query($connection,$query)){
+	   while($subsale = mysqli_fetch_assoc($result)){
+	   	   $subsale = (object)$subsale;
+           array_push($object['sales']['sales'],$subsale);
+	   }
+	   return (object)$object['sales'];
+	}else{
+		printf("Notice: %s", mysqli_error($mysqli));
+		return false;
+	}
+}
 
 //get sale id when invoice number is supplied
 function getSaleId($invoice_num,$mysqli){
@@ -34,8 +60,9 @@ function getSaleByID($sale_id,$mysqli){
 
 }
 
-
-
+//expected [['quantity'=> 12, 'stock_id' => 2],['quantity'=> 12, 'stock_id' => 2]];
+//reduces th stock level
+//you should check the supply status before reducing
 function reduceStockLevel($connection,$data){
 	$subsales = array();
 	foreach ($data->sales as $subsaledata){
@@ -49,6 +76,7 @@ function reduceStockLevel($connection,$data){
 		$new_quantity = $old_quantity - $this_stock_quantity;
 		setStockQuantity($this_stock_id,$new_quantity,$connection);
 	}
+	return true;
 }
 
 
@@ -96,14 +124,14 @@ function createNewSale($mysqli,$theJson){
 	{
 
         //store debt in table if payment is incomplete
-        if($theJson->amount_paid < $theJson->total)
-        {
-        	storeDebt($mysqli,$theJson->customer_id, $theJson->invoice_number,$theJson->amount_paid
-        		,$theJson->total,$theJson->sale_date);
-        }
+		if($theJson->amount_paid < $theJson->total)
+		{
+			storeDebt($mysqli,$theJson->customer_id, $theJson->invoice_number,$theJson->amount_paid
+				,$theJson->total,$theJson->sale_date);
+		}
 
 		//store sale_id in session last_sale_id
-	   $_SESSION['last_sale_id'] = $mysqli->insert_id;
+		$_SESSION['last_sale_id'] = $mysqli->insert_id;
 		return true;
 	}
 	else{
@@ -111,20 +139,20 @@ function createNewSale($mysqli,$theJson){
 		return false;
 	}
 
- }
+}
 
 
 function storeDebt($mysqli,$customer_id,$invoice_number, $amount_paid,$total,$date){
 	$debt = $total - $amount_paid; //cast this to integer to stop unimpotant balances from being debt
-    $query = "INSERT INTO debtors (id, customer_id,amount,invoice,debt_date) 
-              VALUES(NULL,'$customer_id','$debt', '$invoice_number','$date')";
-    if($mysqli->query($mysqli,$query))
-    {
-    	return true;
-    }
-    else{
-    	return false;
-    }
+	$query = "INSERT INTO debtors (id, customer_id,amount,invoice,debt_date) 
+	VALUES(NULL,'$customer_id','$debt', '$invoice_number','$date')";
+	if($mysqli->query($mysqli,$query))
+	{
+		return true;
+	}
+	else{
+		return false;
+	}
 }
 
 
@@ -303,11 +331,46 @@ function genNewInvoiceNumber($mysqli){
 
 
 function get2Dec($string){
- $vals = explode('.', $string);
- $vals = $vals[0]. "." .substr($vals[1], 0, 2);
- return (float) $vals;
+	$vals = explode('.', $string);
+	$vals = $vals[0]. "." .substr($vals[1], 0, 2);
+	return (float) $vals;
 }
 
+
+//checks the quantity_in_store of a stock and returns a message concerning it status
+function checkQty($connection,$stock_id,$quantity){
+	$error_message = '';
+
+	$old_quantity = getStockquantity($stock_id,$connection);
+
+	if ($old_quantity < $quantity){
+		$error_message = sprintf("Remember Your Stock Level For %s Is Low And Will Be Reduced To %d",
+			getStockDescription($stock_id,$connection), $old_quantity - $quantity);	
+	}
+
+	if($error_message == ''){
+		return '';
+	}else {
+		return $error_message;
+	}
+}
+
+// checks if customer is a debtor and returns name and amount owed even if customer isnt a debtor
+function customerIsDebtor($connection,$customer_id){
+	$query = "SELECT SUM(amount) as amount, customers.customer_name AS name FROM `debtors` INNER JOIN customers ON debtors.customer_id = customers.id  WHERE customer_id = '$customer_id'";
+
+	if($result = mysqli_query($connection,$query)){
+		$debt_arr = mysqli_fetch_assoc($result);
+		return [
+			'name'=> $debt_arr['name'],
+			'amount' => $debt_arr['amount']
+		];
+	}else{
+		trigger_error(mysqli_error($connection));
+		return false;
+	}
+
+}
 
 
 ?>
