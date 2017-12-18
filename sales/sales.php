@@ -246,7 +246,7 @@ if (!isset($_SESSION['user'])){header("Location:../index.php");}
               <td>
                 <?php
 
-                   if( $sale['supply_status'] == 1){
+                   if($sale['supply_status'] == 1){
                       echo 'YES';
                    }else{
                        echo 'NO';
@@ -359,7 +359,7 @@ if (!isset($_SESSION['user'])){header("Location:../index.php");}
     var should_delete_sale = confirm(`Are You Sure You Want To Delete This Sales With Invoice Number ${invoice} Remember This Action Is Irreversabele`);
     if(should_delete_sale){
       console.log('Deleting...');
-      window.location = '../sales/previous-inc.inc.php?sid=' + sid;
+      window.location = '../sales/sales.inc.php?sid=' + sid;
     }
   });
 
@@ -390,68 +390,6 @@ if (!isset($_SESSION['user'])){header("Location:../index.php");}
   }
 
 });
-
-
-// $('.edit').on('click', function(event){
-//   var button =  event.target;
-//   var customer = button.getAttribute('customer_data');
-//   var customer = JSON.parse(customer);
-//   console.log(customer);
-
-//   $('#customer_name').val(customer.customer_name);
-//   $('#customer_datecreated').val(customer.date_created);
-//   $('#customer_address').val(customer.address);
-//   $('#customer_phone').val(customer.customer_phone);
-//   $('#id').val(customer.id);
-
-//   $('.modal').modal();
-// });
-
-
-
-// $('#cost_per_ton').on('click',function(){
-//   $('.modal').hide();
-// });
-
-// $('#editstock').on('click',function(){
-//   $('.modal').modal();
-// });
-
-
-
-
-     // Add debtor module
-    //  $(function(){
-    //   $("#new-debtor").on('click', function(){
-    //    $('.modal-add-debtor').modal();
-    //  });  
-
-    //   $('#save_debtor').on('click', function(e){
-    //     let selectedIndex = document.getElementById('customers').selectedIndex;
-    //     let customer_id  =  document.getElementById('customers')
-    //     .options[selectedIndex].getAttribute('data-customer-id');
-
-    //     let amount_owed = $('#debt-amount').val();
-    //     let date = $('#debt-date').val();
-
-    //     $.post("newdebtor.php",
-    //     {
-    //      customer : customer_id,
-    //      date: date,
-    //      amount_owed: amount_owed
-    //    },
-
-    //    function(data,status){
-    //      if(status == 'success'){
-    //       showToast('success', 'Debtor Successfully Added');
-    //       setTimeout(()=>{location.reload()},2000);
-    //     }
-    //   });
-    //   }); 
-    // });
-
-
-
   </script>
 
 </script>
