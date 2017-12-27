@@ -132,150 +132,186 @@ if (!isset($_SESSION['user'])){header("Location:../index.php");}
           </section>
 
           <!-- the search area -->
-          <div class = 'row' >
-           <div class = "col-xs-10 col-md-4 pull-right" style = "padding-right:30px; padding-top:10px;padding-left:10px; padding-bottom:10px;">
-            <form>
-             <div class="input-group input-group-sm">
-              <input type="text" class="form-control" id ='sale-invoice-num' placeholder = 'Enter Invoice Number To Delete' required>
-              <span class="input-group-btn">
-                <button type="button" class="btn btn-info btn-flat" id = "delete-sale-by-invoice">Delete!</button>
-              </span>
+          <div class = 'row' style="background-color: white;margin:10px" >
+            <div class = "box-body">
+              <form method = 'GET'>
+                <div class="col-xs-2">
+                  <label>Start Date</label>
+                  <input type="date" class="form-control" name = "start" placeholder=".col-xs-3">
+                </div>
+                <div class="col-xs-2">
+                  <label>End Date</label>
+                  <input type="date" class="form-control" name = "end" placeholder=".col-xs-4">
+                </div>
+                <div class="col-xs-2">
+                  <label>Supply Status</label>
+                  <select class="form-control" name = "supply_status">
+                    <option value = "2">ALL</option>
+                    <option value = "1">YES</option>
+                    <option value = "0">NO</option>
+                  </select>
+                </div>
+                <div class="col-xs-2" style="padding-top:23px">
+                  <input type="submit" class="btn btn-primary" value = 'Go' name= 'submit'>
+                </div>
+              </form>
+
+              <div class = "col-xs-10 col-md-4 pull-right" style = "padding-right:30px;padding-top:23px">
+                <form>
+                 <div class="input-group ">
+                  <input type="text" class="form-control" id ='sale-invoice-num' placeholder = 'Enter Invoice Number To Delete' required>
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-info btn-flat" id = "delete-sale-by-invoice">Delete!</button>
+                  </span>
+                </div>
+              </form>
             </div>
-          </form>
+          </div>
         </div>
-      </div>
-      <!-- ends here -->
+        <!-- ends here -->
 
 
-      <div class = "container-fluid">
+        <div class = "container-fluid">
 
-        <div class = "row">
-          <div>
-            <div class = 'col col-md-3'>
-             <div class="small-box bg-blue animated slideInLeft">
-              <div class="inner">
-                <h3 id = 's1'>
-                 <?php  
-                 echo number_format(getTodaySales($connection));
-                 ?>
-               </h3>
+          <div class = "row">
 
-               <p>Today Sales</p>
+            <div>
+              <div class = 'col col-md-3'>
+               <div class="small-box bg-blue animated slideInLeft">
+                <div class="inner">
+                  <h3 id = 's1'>
+                   <?php  
+                   echo number_format(getTodaySales($connection));
+                   ?>
+                 </h3>
 
-               <div class="btn-group">
-                <button type="button" class="btn btn-sm btn-success"
-                today-sales-total = "<?php echo getTodaySales($connection)?>" id='v1'>Today</button>
-                <button type="button" class="btn btn-sm btn-success" all-sales-total = "<?php echo getTotalSales($connection) ?>" id = 'v2'>Total</button>
+                 <p>Today Sales</p>
+
+                 <div class="btn-group">
+                  <button type="button" class="btn btn-sm btn-success"
+                  today-sales-total = "<?php echo getTodaySales($connection)?>" id='v1'>Today</button>
+                  <button type="button" class="btn btn-sm btn-success" all-sales-total = "<?php echo getTotalSales($connection) ?>" id = 'v2'>Total</button>
+                </div>
+              </div>
+              <div class="icon" style="margin-top: 10px">
+                <i class="glyphicon glyphicon-euro"></i>
               </div>
             </div>
-            <div class="icon" style="margin-top: 10px">
-              <i class="glyphicon glyphicon-euro"></i>
+          </div>
+
+          <div class = 'col col-md-3'>
+           <div class="small-box bg-aqua animated slideInLeft">
+            <div class="inner">
+              <h3 id = 's2'>
+               <?php  
+
+               echo getSalesCount($connection);
+
+               ?>
+             </h3>
+             <p>Sales Count</p>
+             <div class="btn-group">
+              <button type="button" class="btn btn-sm btn-success" sales-count-today = "<?php echo getSalesCountToday($connection)?>" id = 'v3'>Today</button>
+              <button type="button" class="btn btn-sm btn-success"
+              sales-count-all = "<?php echo getSalesCount($connection)?>" id = 'v4'>Total</button>
             </div>
+
           </div>
-        </div>
-
-        <div class = 'col col-md-3'>
-         <div class="small-box bg-aqua animated slideInLeft">
-          <div class="inner">
-            <h3 id = 's2'>
-             <?php  
-
-             echo getSalesCount($connection);
-
-             ?>
-           </h3>
-           <p>Sales Count</p>
-           <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-success" sales-count-today = "<?php echo getSalesCountToday($connection)?>" id = 'v3'>Today</button>
-            <button type="button" class="btn btn-sm btn-success"
-            sales-count-all = "<?php echo getSalesCount($connection)?>" id = 'v4'>Total</button>
+          <div class="icon">
+            <button id = 'new-debtor' class = 'btn btn-warning' style="margin-bottom: 50px">
+              Sell Now  <span class = "glyphicon glyphicon-send"></span>
+            </button>
           </div>
-
-        </div>
-        <div class="icon">
-          <button id = 'new-debtor' class = 'btn btn-warning' style="margin-bottom: 50px">
-            Sell Now  <span class = "glyphicon glyphicon-send"></span>
-          </button>
         </div>
       </div>
+
     </div>
 
-  </div>
 
 
-  <!-- data table col -->
-  <div class = 'col col-md-12'>
-    <div class="box with-border box-primary">
-      <div class="box-header  ">
-        <h3 class="box-title">Customers</h3>
-      </div>
-      <!-- /.box-header -->
-      <div class="box-body">
-        <table id="example2" class="table table-bordered table-striped">
-          <thead>
-            <tr>
-              <th>S/N</th>
-              <th>Customer Name</th>
-              <th>Phone</th>
-              <th>Invoice Number</th>
-              <th>Amount Paid</th>
-              <th>Total</th>
-              <th>Supplied</th>
-              <th>Date</th>
-              <!-- button -->
-              <th></th>
-              <!-- button -->
-            </tr>
-          </thead>
 
-          <tbody>
-            <?php $i = 0;?>
-            <?php while($sale = mysqli_fetch_assoc($sales)){ ?> 
-            <tr>
-              <td><?php echo  ++$i ?></td>
-              <td><?php echo  $sale['customer_name'] ?></td>
-              <td><?php echo  $sale['customer_phone'] ?></td>
-              <td>
-                <a href = '../sales/invoice.php?id=<?php echo  $sale['invoice'] ?>'>
-                  <?php echo  $sale['invoice'] ?>
-                </a>
-              </td>
 
-              <td><?php echo  $sale['amount_paid'] ?></td>
-              <td><?php echo $sale['total'] ?></td>
-              <td>
-                <?php if ($sale['supply_status'] == '1'): ?>
-                  YES
-                <?php else: ?>
-                  NO 
-                  <button class = "btn supplied-btn btn-sm btn-primary"
-                  style = "padding:0px" sale-id = "<?= $sale["id"]?>">supplied</button>
-                <?php endif ?>
-              </td>
-              <td><?php echo $sale['sale_date'] ?></td>
-              <td>
-                <button class = 'btn btn-danger btn-sm paid-all' sale_id = "<?= $sale['id']?>" invoice-number = <?= $sale['invoice']?> > 
-                 <span class = 'glyphicon glyphicon-remove'></span>
-               </button>
-             </td>
-             <?php } ?>                                                 
-           </tr>
-         </tbody>
-       </table>
+
+    <!-- data table col -->
+    <div class = 'col col-md-12'>
+      <div class="box with-border box-primary">
+        <div class="box-header  ">
+          <h3 class="box-title">Customers</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+          <table id="example2" class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>S/N</th>
+                <th>Customer Name</th>
+                <th>Phone</th>
+                <th>Invoice Number</th>
+                <th>Amount Paid</th>
+                <th>Total</th>
+                <th>Supplied</th>
+                <th>Date</th>
+                <!-- button -->
+                <th></th>
+                <!-- button -->
+              </tr>
+            </thead>
+
+            <tbody>
+              <?php $i = 0;?>
+              <?php while($sale = mysqli_fetch_assoc($sales)){ ?> 
+              <tr>
+                <td><?php echo  ++$i ?></td>
+                <td><?php echo  $sale['customer_name'] ?></td>
+                <td><?php echo  $sale['customer_phone'] ?></td>
+                <td>
+                  <a href = '../sales/invoice.php?id=<?php echo  $sale['invoice'] ?>'>
+                    <?php echo  $sale['invoice'] ?>
+                  </a>
+                </td>
+
+                <td><?php echo  $sale['amount_paid'] ?></td>
+                <td><?php echo $sale['total'] ?></td>
+                <td>
+                  <?php if ($sale['supply_status'] == '1'): ?>
+                    YES
+                  <?php else: ?>
+                    NO 
+                    <button class = "btn supplied-btn btn-sm btn-primary"
+                    style = "padding:0px" sale-id = "<?= $sale["id"]?>">supplied</button>
+                  <?php endif ?>
+                </td>
+                <td><?php echo date('d/m/Y', strtotime($sale['sale_date']))?></td>
+                <td>
+                  <button class = 'btn btn-danger btn-sm paid-all' sale_id = "<?= $sale['id']?>" invoice-number = <?= $sale['invoice']?> > 
+                   <span class = 'glyphicon glyphicon-remove'></span>
+                 </button>
+               </td>
+               <?php } ?>                                                 
+             </tr>
+           </tbody>
+         </table>
+       </div>
+       <!-- /.box-body -->
      </div>
-     <!-- /.box-body -->
+
+
+
    </div>
 
-
-
+   <!-- datatable col end  -->
  </div>
 
- <!-- datatable col end  -->
-</div>
 
 
 
-<!-- /.box-body -->
+
+
+
+
+
+
+ <!-- /.box-body -->
 </div>
 <!-- /.box -->
 </div>
@@ -330,15 +366,15 @@ if (!isset($_SESSION['user'])){header("Location:../index.php");}
         },
         function(data,status){
           console.log(data);
-           if (data.status === true){
-               showToast("success", "You have Successfully Marked This Sale Items As Supplied");
-               location.reload();
-           }else{
-             showToast("error", "An error Occured");
-           }
-        });
+          if (data.status === true){
+           showToast("success", "You have Successfully Marked This Sale Items As Supplied");
+           location.reload();
+         }else{
+           showToast("error", "An error Occured");
+         }
+       });
       }
-  });
+    });
 
 
     $("#delete-sale-by-invoice").on('click', function(){

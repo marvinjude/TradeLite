@@ -4,6 +4,22 @@ $connection = include('../resources/conection.inc.php');
 include_once '../functions/invoice_functions.php';
 $sales = getAllSales($connection);
 
+//filter the data by date and supply status
+if(isset($_GET['submit'])){
+  $start_date = $_GET['start'];
+  $end_date = $_GET['end'];
+  $supply_status = $_GET['supply_status'];
+
+  $sales_info_array = (object)[
+    'start_date'=>$start_date,
+    'end_date'=> $end_date, 
+    'supply_status'=> $supply_status
+  ];
+
+  $sales = getAllSalesAndFilter($connection,$sales_info_array);
+}
+
+
 //remove sales by id
 if(isset($_GET['sid'])){
   $sale_id = trim($_GET['sid']);
@@ -30,7 +46,7 @@ if(isset($_POST['sid_mark_supplied'])){
   $sale_id = $_POST['sid_mark_supplied'];
   $subsales = getSubSales($connection,$sale_id);
   //set header
-   header("Content-Type: application/json");
+  header("Content-Type: application/json");
 
    //check the supply status which must be not supplied or '0' for this to work
   if (getSaleByID($sale_id,$connection)['supply_status'] == '0'){
@@ -77,9 +93,10 @@ function removeSaleByInvoiceNum($connection,$invoice_num){
 
 
 function getAllSales($connection){
-  $query = "SELECT sales.id AS id ,sales.invoice_number AS invoice,customers.customer_name AS customer_name, customers.customer_phone  AS customer_phone, sales.supply_status AS supply_status, sales.amount_paid AS amount_paid, sales.total AS total, sales.sale_date AS sale_date FROM 
+    $query = "SELECT sales.id AS id ,sales.invoice_number AS invoice,customers.customer_name AS customer_name, customers.customer_phone  AS customer_phone, sales.supply_status AS supply_status, sales.amount_paid AS amount_paid, sales.total AS total, sales.sale_date AS sale_date FROM 
   `sales` INNER JOIN `customers` ON sales.customer_id = customers.id ";
 
+  
   if ($result = mysqli_query($connection,$query)){
    return $result;
  }else{
@@ -87,6 +104,24 @@ function getAllSales($connection){
    return false;
  }
 }
+
+function getAllSalesAndFilter($connection,$sales_info_array){
+ $query = "SELECT sales.id AS id ,sales.invoice_number AS invoice,customers.customer_name AS customer_name, 
+   customers.customer_phone  AS customer_phone, sales.supply_status AS supply_status, sales.amount_paid AS amount_paid,sales.total AS total, sales.sale_date AS sale_date FROM `sales` INNER JOIN `customers` ON sales.customer_id = customers.id WHERE sale_date BETWEEN '$sales_info_array->start_date' AND '$sales_info_array->end_date'  ";
+
+   if($sales_info_array->supply_status == 1 || $sales_info_array->supply_status == 0)
+   {
+      $query .= " AND supply_status = '$sales_info_array->supply_status'";
+   }
+
+ if ($result = mysqli_query($connection,$query)){
+   return $result;
+ }else{
+   trigger_error(mysqli_error($connection));
+   return false;
+ }
+}
+
 
 function getTotalSales($connection){
   $query = "SELECT SUM(amount_paid) as total_sales FROM sales";
